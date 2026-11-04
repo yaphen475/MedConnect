@@ -7,7 +7,23 @@ stricts par rôle (RGPD, données fictives uniquement).
 **Référence backlog :** [`docs/BACKLOG.md`](docs/BACKLOG.md) (Product Backlog MedConnect)
 **Règles d'équipe et répartition :** [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
-## Démarrage en 3 commandes
+## Démarrage — une seule commande
+
+```powershell
+# Windows (une fois, puis relancer quand besoin : c'est idempotent)
+.\setup.cmd          # installe tout : venv + pip + migrations + seed + npm install
+.\dev.cmd            # installe ce qui manque puis demarre backend + frontend
+                     # et ouvre http://localhost:3000
+```
+
+```bash
+# WSL / macOS / Linux
+bash setup.sh          # installation
+bash setup.sh --start  # installation + demarrage des deux serveurs
+bash setup.sh --reset  # reinitialise la base de demonstration
+```
+
+Équivalent manuel, si vous préférez :
 
 ```powershell
 # 1. Backend (dans backend/)

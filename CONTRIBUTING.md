@@ -3,6 +3,19 @@
 > Règle d'or : **chacun ne modifie que SES fichiers** (matrice ci-dessous).
 > Tout le reste est en lecture seule — si vous avez besoin d'y toucher, annoncez-le d'abord au groupe.
 
+## 0. Installation (une commande, pour tout le monde)
+
+```powershell
+git clone https://github.com/yaphen475/Microprojet_SI.git
+cd Microprojet_SI
+.\setup.cmd      # installe tout : venv, dependances, migrations, seed, npm install
+.\dev.cmd        # demarre backend (:8000) + frontend (:3000) et ouvre le navigateur
+```
+
+Le script est **idempotent** : le relancer ne casse rien et ne réinstalle que ce qui manque.
+Tests : `cd backend; .\.venv\Scripts\python.exe manage.py test tests`.
+Base de démo à zéro : `.\setup.cmd -Reset`.
+
 ## 1. Matrice de propriété
 
 | Membre | Dossiers / fichiers propriétaires | User stories |
