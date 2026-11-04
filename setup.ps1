@@ -28,7 +28,7 @@ $Frontend = Join-Path $Root "frontend"
 $VenvDir  = Join-Path $Backend ".venv"
 $VenvPy   = Join-Path $VenvDir "Scripts\python.exe"
 $ReqFile  = Join-Path $Backend "requirements.txt"
-$ReqHash  = Join-Path $VenvDir ".requirements.sha1"
+$ReqHash  = Join-Path $VenvDir ".requirements.hash"
 $DbFile   = Join-Path $Backend "db.sqlite3"
 
 function Step($m) { Write-Host "`n==> $m" -ForegroundColor Cyan }
@@ -69,7 +69,7 @@ if (-not (Test-Path $VenvPy)) {
 
 # ------------------------------------------------------ 3. dependances Python
 Step "Dependances Python"
-$hash = (Get-FileHash $ReqFile -Algorithm SHA1).Hash
+$hash = (Get-FileHash $ReqFile -Algorithm SHA256).Hash
 $previous = if (Test-Path $ReqHash) { (Get-Content $ReqHash -Raw).Trim() } else { "" }
 $djangoPresent = Test-Path (Join-Path $VenvDir "Lib\site-packages\django")
 if ($previous -eq $hash -and $djangoPresent) {

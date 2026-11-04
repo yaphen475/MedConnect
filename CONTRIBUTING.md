@@ -3,18 +3,23 @@
 > Règle d'or : **chacun ne modifie que SES fichiers** (matrice ci-dessous).
 > Tout le reste est en lecture seule — si vous avez besoin d'y toucher, annoncez-le d'abord au groupe.
 
-## 0. Installation (une commande, pour tout le monde)
+## 0. Installation — `make setup` puis `make start`
 
-```powershell
-git clone https://github.com/yaphen475/Microprojet_SI.git
-cd Microprojet_SI
-.\setup.cmd      # installe tout : venv, dependances, migrations, seed, npm install
-.\dev.cmd        # demarre backend (:8000) + frontend (:3000) et ouvre le navigateur
+```bash
+git clone https://github.com/yaphen475/MedConnect.git
+cd MedConnect
+make setup     # 1 fois : venv, dependances, migrations, seed, npm install
+make start     # backend (:8000) + frontend (:3000), ouvre le navigateur
 ```
 
-Le script est **idempotent** : le relancer ne casse rien et ne réinstalle que ce qui manque.
-Tests : `cd backend; .\.venv\Scripts\python.exe manage.py test tests`.
-Base de démo à zéro : `.\setup.cmd -Reset`.
+- **Idempotent** : `make setup` relancé ne réinstalle que ce qui manque
+  (`pip` sauté si `requirements.txt` inchangé, `npm` sauté si `node_modules/` présent).
+- Tests : `make test` — **toujours vert avant de merger sur `main`**.
+- Arrêt : `make stop` · Base de démo à zéro : `make reset` · Autres : `make help`.
+
+Prérequis (une fois) : **Python 3.10+**, **Node 18+**, **Git for Windows**,
+puis `scoop install make`. Sans make : `.\setup.cmd` / `.\dev.cmd`, ou
+`bash setup.sh [--start] [--stop] [--test] [--reset]`.
 
 ## 1. Matrice de propriété
 

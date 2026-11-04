@@ -7,21 +7,30 @@ stricts par rôle (RGPD, données fictives uniquement).
 **Référence backlog :** [`docs/BACKLOG.md`](docs/BACKLOG.md) (Product Backlog MedConnect)
 **Règles d'équipe et répartition :** [`CONTRIBUTING.md`](CONTRIBUTING.md)
 
-## Démarrage — une seule commande
-
-```powershell
-# Windows (une fois, puis relancer quand besoin : c'est idempotent)
-.\setup.cmd          # installe tout : venv + pip + migrations + seed + npm install
-.\dev.cmd            # installe ce qui manque puis demarre backend + frontend
-                     # et ouvre http://localhost:3000
-```
+## Démarrage — 2 commandes (`make`)
 
 ```bash
-# WSL / macOS / Linux
-bash setup.sh          # installation
-bash setup.sh --start  # installation + demarrage des deux serveurs
-bash setup.sh --reset  # reinitialise la base de demonstration
+make setup    # 1 fois : venv + pip + migrations + seed + npm install
+make start    # backend (:8000) + frontend (:3000), ouvre le navigateur
 ```
+
+Toutes les commandes (`make help`) :
+
+| Commande | Rôle |
+|---|---|
+| `make setup` | installe tout — **idempotent**, à relancer quand besoin |
+| `make start` | démarre les deux serveurs (`make start BROWSER_OPEN=0` sans navigateur) |
+| `make stop` | arrête les deux serveurs (cible uniquement les ports 8000/3000) |
+| `make test` | lance les tests Django |
+| `make reset` | base de démo à zéro (puis `make seed`) |
+| `make health` / `make logs` | vérifie / affiche l'état des serveurs |
+
+> **Installation de make (une fois)** — Windows : `scoop install make`
+> (sinon `winget install GnuWin32.Make`). Git for Windows est requis :
+> il fournit le `sh` utilisé par le Makefile.
+>
+> Sans make : `.\setup.cmd` puis `.\dev.cmd` — ou
+> `bash setup.sh [--start] [--stop] [--test] [--reset]` sous WSL/macOS/Linux.
 
 Équivalent manuel, si vous préférez :
 
