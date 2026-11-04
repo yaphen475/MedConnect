@@ -17,9 +17,10 @@ make start     # backend (:8000) + frontend (:3000), ouvre le navigateur
 - Tests : `make test` — **toujours vert avant de merger sur `main`**.
 - Arrêt : `make stop` · Base de démo à zéro : `make reset` · Autres : `make help`.
 
-Prérequis (une fois) : **Python 3.10+**, **Node 18+**, **Git for Windows**,
-puis `scoop install make`. Sans make : `.\setup.cmd` / `.\dev.cmd`, ou
-`bash setup.sh [--start] [--stop] [--test] [--reset]`.
+Prérequis (une fois) : **Python 3.10+**, **Node 18+**,
+puis `scoop install make`. Aucun script shell requis : le Makefile appelle
+`python setup.py` directement, donc tout est multiplateforme.
+Sans make : `python setup.py` puis `python setup.py --start`.
 
 ## 1. Matrice de propriété
 

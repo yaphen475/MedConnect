@@ -26,11 +26,12 @@ Toutes les commandes (`make help`) :
 | `make health` / `make logs` | vérifie / affiche l'état des serveurs |
 
 > **Installation de make (une fois)** — Windows : `scoop install make`
-> (sinon `winget install GnuWin32.Make`). Git for Windows est requis :
-> il fournit le `sh` utilisé par le Makefile.
+> (sinon `winget install GnuWin32.Make`). Aucun script shell ni PowerShell
+> requis : le Makefile appelle `python setup.py` directement, donc tout est
+> multiplateforme (Windows, macOS, Linux, WSL).
 >
-> Sans make : `.\setup.cmd` puis `.\dev.cmd` — ou
-> `bash setup.sh [--start] [--stop] [--test] [--reset]` sous WSL/macOS/Linux.
+> Sans make : `python setup.py` puis `python setup.py --start` —
+> mêmes étapes, sans make.
 
 Équivalent manuel, si vous préférez :
 
