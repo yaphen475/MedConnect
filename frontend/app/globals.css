@@ -1,0 +1,108 @@
+:root {
+  --bleu: #1d4ed8;
+  --bleu-fonce: #1e3a8a;
+  --gris: #f3f4f6;
+  --texte: #111827;
+  --accent: #059669;
+  --alerte: #b91c1c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--texte);
+  background: var(--gris);
+  line-height: 1.5;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+h1 {
+  color: var(--bleu-fonce);
+}
+
+a {
+  color: var(--bleu);
+}
+
+/* Accessibilite : focus visible pour la navigation au clavier (RGAA) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--bleu);
+  outline-offset: 2px;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.kpi {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--bleu);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  background: #e5e7eb;
+}
+
+.badge.attente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge.confirme {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+button {
+  background: var(--bleu);
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--bleu-fonce);
+}
