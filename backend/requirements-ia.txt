@@ -1,5 +1,0 @@
-# Bonus (chatbot RAG) - a installer SEULEMENT si on y arrive :
-# uniquement des modeles open-source auto-heberges, aucun modele americain.
--r requirements.txt
-sentence-transformers>=3.0
-pgvector-equivalent : sqlite-vec  (index vectoriel local)
