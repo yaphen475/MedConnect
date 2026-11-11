@@ -1,0 +1,59 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}Sign in | MedConnect{% endblock %}
+
+{% block content %}
+<main class="auth-page d-flex align-items-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-5 col-xl-4">
+                <section class="card border-0 shadow-sm auth-card">
+                    <div class="card-body p-4 p-md-5">
+                        <div class="brand-mark mx-auto mb-3">M</div>
+                        <h1 class="h3 text-center mb-2">MedConnect</h1>
+                        <p class="text-secondary text-center mb-4">Secure access to your healthcare workspace</p>
+
+                        {% if form.errors %}
+                            <div class="alert alert-danger" role="alert">
+                                Invalid username or password.
+                            </div>
+                        {% endif %}
+
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            {% if next %}
+                                <input type="hidden" name="next" value="{{ next }}">
+                            {% endif %}
+                            <div class="mb-3">
+                                <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+                                <input
+                                    class="form-control form-control-lg"
+                                    id="{{ form.username.id_for_label }}"
+                                    name="{{ form.username.html_name }}"
+                                    type="text"
+                                    value="{{ form.username.value|default:'' }}"
+                                    autocomplete="username"
+                                    autofocus
+                                    required
+                                >
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+                                <input
+                                    class="form-control form-control-lg"
+                                    id="{{ form.password.id_for_label }}"
+                                    name="{{ form.password.html_name }}"
+                                    type="password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                            </div>
+                            <button class="btn btn-primary btn-lg w-100" type="submit">Sign in</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

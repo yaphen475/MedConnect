@@ -1,8 +1,8 @@
 # MedConnect
 
-Projeto Django 5.2 LTS vazio e modular para o desenvolvimento paralelo do MedConnect.
+MedConnect is a modular Django 5.2 LTS application using SQLite and Django Templates.
 
-## Instalação
+## Setup
 
 ```powershell
 python -m venv .venv
@@ -11,10 +11,27 @@ python -m pip install -r requirements.txt
 python manage.py migrate
 ```
 
-## Execução
+## Development demo users
+
+Set a development-only password and create the four demo accounts:
+
+```powershell
+$env:MEDCONNECT_DEMO_PASSWORD = "<development-password>"
+python manage.py seed_demo_users
+```
+
+The command creates `admin_demo`, `doctor_demo`, `secretary_demo`, and `patient_demo`. It only runs when `DEBUG=True` and never grants staff or superuser status.
+
+## Run
 
 ```powershell
 python manage.py runserver
 ```
 
-O Product Backlog original está em `MedConnect_Product_Backlog.pdf` e `docs/BACKLOG.md`.
+Open `http://127.0.0.1:8000/login/` and authenticate with a demo username and the configured password.
+
+## Security boundary
+
+Django superuser status is not authorization to access private medical records or messages. Future clinical modules must enforce their own explicit role and object-level permissions independently of `is_superuser`.
+
+The original Product Backlog remains available in `MedConnect_Product_Backlog.pdf` and `docs/BACKLOG.md`.
