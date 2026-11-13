@@ -62,6 +62,7 @@ class MessagingTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "message prive medecin")
+        self.assertContains(response, "data-live-thread")
 
         self.client.post(
             reverse("messaging:thread", args=[self.thread_doctor_a.pk]),
@@ -75,6 +76,36 @@ class MessagingTests(TestCase):
             ).exists()
         )
 
+    def test_participant_receives_new_messages_through_sse(self):
+        self.client.force_login(self.patient_a)
+        cursor = self.thread_doctor_a.messages.order_by("-pk").first().pk
+        response = self.client.get(
+            reverse(
+                "messaging:thread_events",
+                args=[self.thread_doctor_a.pk],
+            ),
+            {"after": cursor},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/event-stream")
+
+        stream = iter(response.streaming_content)
+        try:
+            self.assertEqual(next(stream), b": connected\n\n")
+            message = Message.objects.create(
+                conversation=self.thread_doctor_a,
+                sender=self.doctor,
+                body="New live update",
+            )
+            event = next(stream)
+            self.assertIn(b"event: message", event)
+            self.assertIn(str(message.pk).encode(), event)
+            self.assertIn(b"New live update", event)
+            message.refresh_from_db()
+            self.assertIsNotNone(message.read_at)
+        finally:
+            response.close()
+
     def test_non_participant_is_forbidden(self):
         """US-17 / RG-11: patient B cannot open the thread of patient A."""
         self.client.force_login(self.patient_b)
@@ -82,6 +113,13 @@ class MessagingTests(TestCase):
             reverse("messaging:thread", args=[self.thread_doctor_a.pk])
         )
         self.assertEqual(response.status_code, 403)
+        event_response = self.client.get(
+            reverse(
+                "messaging:thread_events",
+                args=[self.thread_doctor_a.pk],
+            )
+        )
+        self.assertEqual(event_response.status_code, 403)
 
     def test_admin_has_no_access_to_messaging(self):
         """RG-12 / matrix: « Messagerie — Admin : sans accès au contenu »."""
@@ -90,6 +128,10 @@ class MessagingTests(TestCase):
             reverse("messaging:inbox"),
             reverse("messaging:compose"),
             reverse("messaging:thread", args=[self.thread_doctor_a.pk]),
+            reverse(
+                "messaging:thread_events",
+                args=[self.thread_doctor_a.pk],
+            ),
         ):
             with self.subTest(url=url):
                 self.assertEqual(self.client.get(url).status_code, 403)

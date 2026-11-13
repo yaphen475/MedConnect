@@ -17,9 +17,20 @@
 </section>
 
 <div class="module-panel mb-4">
-    <div class="thread">
+    <div
+        class="thread"
+        data-live-thread
+        data-events-url="{% url 'messaging:thread_events' conversation.pk %}"
+        data-last-message-id="{{ last_message_id }}"
+        data-current-user-id="{{ user.pk }}"
+        aria-live="polite"
+        aria-relevant="additions"
+    >
         {% for message in messages_list %}
-            <div class="message-bubble{% if message.sender == user %} mine{% endif %}">
+            <div
+                class="message-bubble{% if message.sender == user %} mine{% endif %}"
+                data-message-id="{{ message.pk }}"
+            >
                 <div class="message-meta">
                     {{ message.sender.username }} · {{ message.sent_at|date:'d/m/Y H:i' }}
                     {% if message.sender == user and message.read_at %}<i class="bi bi-check2-all" title="{% trans 'Read' %}"></i>{% endif %}
@@ -27,7 +38,7 @@
                 <div style="white-space: pre-wrap;">{{ message.body }}</div>
             </div>
         {% empty %}
-            <p class="text-secondary text-center mb-0">{% trans "No message yet — start the conversation below." %}</p>
+            <p class="text-secondary text-center mb-0" data-empty-thread>{% trans "No message yet — start the conversation below." %}</p>
         {% endfor %}
     </div>
 </div>
@@ -41,4 +52,43 @@
         </button>
     </div>
 </form>
+
+<script>
+    const liveThread = document.querySelector("[data-live-thread]");
+    if (liveThread && "EventSource" in window) {
+        const eventUrl = `${liveThread.dataset.eventsUrl}?after=${encodeURIComponent(liveThread.dataset.lastMessageId)}`;
+        const messageStream = new EventSource(eventUrl);
+
+        messageStream.addEventListener("message", (event) => {
+            const message = JSON.parse(event.data);
+            if (liveThread.querySelector(`[data-message-id="${message.id}"]`)) {
+                return;
+            }
+
+            const emptyState = liveThread.querySelector("[data-empty-thread]");
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const bubble = document.createElement("div");
+            bubble.className = "message-bubble";
+            bubble.dataset.messageId = message.id;
+            if (String(message.sender_id) === liveThread.dataset.currentUserId) {
+                bubble.classList.add("mine");
+            }
+
+            const metadata = document.createElement("div");
+            metadata.className = "message-meta";
+            metadata.textContent = `${message.sender} · ${message.sent_at}`;
+
+            const body = document.createElement("div");
+            body.style.whiteSpace = "pre-wrap";
+            body.textContent = message.body;
+
+            bubble.append(metadata, body);
+            liveThread.appendChild(bubble);
+            liveThread.scrollTop = liveThread.scrollHeight;
+        });
+    }
+</script>
 {% endblock %}

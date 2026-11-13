@@ -1,0 +1,17 @@
+<div
+    hidden
+    data-appointment-events
+    data-events-url="{% url 'agenda:live_updates' %}"
+    data-since="{{ appointment_cursor }}"
+></div>
+<script>
+    const appointmentEvents = document.querySelector("[data-appointment-events]");
+    if (appointmentEvents && "EventSource" in window) {
+        const eventUrl = `${appointmentEvents.dataset.eventsUrl}?since=${encodeURIComponent(appointmentEvents.dataset.since)}`;
+        const appointmentStream = new EventSource(eventUrl);
+        appointmentStream.addEventListener("appointments-changed", () => {
+            appointmentStream.close();
+            window.location.reload();
+        });
+    }
+</script>

@@ -1,12 +1,14 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from apps.accounts.models import User
 from apps.core.permissions import role_required
+from apps.core.sse import streaming_response
 from apps.messaging.forms import ComposeForm, allowed_recipients
 from apps.messaging.models import Conversation, Message
 
@@ -59,13 +61,76 @@ def thread(request, pk):
     ).exclude(sender=request.user).update(read_at=timezone.now())
 
     conversation_messages = conversation.messages.select_related("sender")
+    last_message_id = (
+        conversation.messages.order_by("-pk").values_list("pk", flat=True).first()
+        or 0
+    )
     context = {
         "conversation": conversation,
         "messages_list": conversation_messages,
+        "last_message_id": last_message_id,
         "other_participants": conversation.other_participants(request.user),
         "section": "messaging",
     }
     return render(request, "messaging/thread.html", context)
+
+
+@role_required(*STAFF_ROLES)
+@require_GET
+def thread_events(request, pk):
+    conversation = get_object_or_404(Conversation, pk=pk)
+    if not conversation.is_participant(request.user):
+        raise PermissionDenied
+
+    raw_cursor = (
+        request.headers.get("Last-Event-ID")
+        or request.GET.get("after")
+        or "0"
+    )
+    try:
+        cursor = int(raw_cursor)
+        if cursor < 0:
+            raise ValueError
+    except (TypeError, ValueError):
+        return HttpResponseBadRequest("Invalid message cursor.")
+
+    def poll_messages():
+        nonlocal cursor
+        new_messages = list(
+            conversation.messages.filter(pk__gt=cursor)
+            .select_related("sender")
+            .order_by("pk")[:100]
+        )
+        if not new_messages:
+            return []
+
+        message_ids = [message.pk for message in new_messages]
+        Message.objects.filter(
+            pk__in=message_ids,
+            read_at__isnull=True,
+        ).exclude(sender=request.user).update(read_at=timezone.now())
+
+        events = []
+        for message in new_messages:
+            cursor = message.pk
+            events.append(
+                (
+                    {
+                        "id": message.pk,
+                        "sender_id": message.sender_id,
+                        "sender": message.sender.username,
+                        "sent_at": timezone.localtime(message.sent_at).strftime(
+                            "%d/%m/%Y %H:%M"
+                        ),
+                        "body": message.body,
+                    },
+                    "message",
+                    message.pk,
+                )
+            )
+        return events
+
+    return streaming_response(poll_messages)
 
 
 @role_required(*STAFF_ROLES)
