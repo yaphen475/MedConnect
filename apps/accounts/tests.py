@@ -114,6 +114,23 @@ class AuthenticationTests(TestCase):
         )
         french_response = self.client.get(login_url)
         self.assertContains(french_response, "Se connecter")
+        self.assertContains(
+            french_response,
+            '<option value="fr" selected>Français</option>',
+        )
+
+        self.client.force_login(self.user)
+        dashboard_url = reverse("accounts:dashboard")
+        self.client.post(
+            reverse("set_language"),
+            {"language": "fr", "next": dashboard_url},
+        )
+        french_dashboard = self.client.get(dashboard_url)
+        self.assertContains(french_dashboard, "Tableau de bord")
+        self.assertContains(
+            french_dashboard,
+            '<option value="fr" selected>Français</option>',
+        )
 
     def test_home_redirects_unauthenticated_user_to_login(self):
         response = self.client.get(reverse("accounts:home"))
