@@ -1,7 +1,9 @@
 from datetime import date as date_type, timedelta
 
 from django.contrib import messages
-from django.db import IntegrityError, transaction
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError, OperationalError, transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
@@ -128,26 +130,41 @@ def requests_list(request):
 @require_POST
 def confirm_request(request, pk):
     """US-07 / RG-01 / RG-04 / RG-05: only one confirmed appointment per slot."""
-    appointment = get_object_or_404(Appointment, pk=pk)
-    if appointment.status != Appointment.Status.PENDING:
-        messages.error(request, "This request has already been processed.")
-        return redirect("agenda:requests")
-
     try:
         with transaction.atomic():
-            if not services.is_slot_available(
-                appointment.date, appointment.start_time
-            ):
-                raise IntegrityError("slot already confirmed")
+            get_user_model().objects.select_for_update().filter(
+                role=SECRETARY
+            ).order_by("pk").first()
+            appointment = get_object_or_404(
+                Appointment.objects.select_for_update().select_related(
+                    "patient"
+                ),
+                pk=pk,
+            )
+            if appointment.status != Appointment.Status.PENDING:
+                raise ValidationError(
+                    "This request has already been processed."
+                )
+            error = services.slot_validation_error(
+                appointment.date,
+                appointment.start_time,
+                appointment.duration_minutes,
+                exclude_pk=appointment.pk,
+                lock=True,
+            )
+            if error:
+                raise ValidationError(error)
             appointment.status = Appointment.Status.CONFIRMED
             appointment.processed_by = request.user
             appointment.save(
                 update_fields=["status", "processed_by", "updated_at"]
             )
-    except IntegrityError:
+    except ValidationError as error:
+        messages.error(request, error.messages[0])
+    except (IntegrityError, OperationalError):
         messages.error(
             request,
-            "Impossible: another appointment already confirmed on this slot.",
+            "The appointment could not be confirmed because the schedule changed.",
         )
     else:
         messages.success(
@@ -181,9 +198,17 @@ def agenda_create(request):
             appointment = form.save(commit=False)
             appointment.status = Appointment.Status.CONFIRMED
             appointment.processed_by = request.user
-            appointment.save()
-            messages.success(request, "Appointment added to the agenda.")
-            return redirect("agenda:view")
+            try:
+                with transaction.atomic():
+                    appointment.save()
+            except (IntegrityError, OperationalError):
+                form.add_error(
+                    None,
+                    "The appointment could not be saved because the schedule changed.",
+                )
+            else:
+                messages.success(request, "Appointment added to the agenda.")
+                return redirect("agenda:view")
     else:
         form = DirectAppointmentForm(initial={"date": _selected_date(request)})
     return render(
@@ -199,9 +224,17 @@ def agenda_edit(request, pk):
     if request.method == "POST":
         form = EditAppointmentForm(request.POST, instance=appointment)
         if form.is_valid():
-            form.save()
-            messages.success(request, "Appointment updated.")
-            return redirect("agenda:view")
+            try:
+                with transaction.atomic():
+                    form.save()
+            except (IntegrityError, OperationalError):
+                form.add_error(
+                    None,
+                    "The appointment could not be saved because the schedule changed.",
+                )
+            else:
+                messages.success(request, "Appointment updated.")
+                return redirect("agenda:view")
     else:
         form = EditAppointmentForm(instance=appointment)
     return render(

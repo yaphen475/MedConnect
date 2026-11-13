@@ -11,7 +11,7 @@
         <h1 class="h4 mt-3">403 — Access restricted</h1>
         {% if user.is_authenticated %}
             <p>
-                Your profile (<strong>{{ user.get_role_display|default:"unknown" }}</strong>)
+                Your profile (<strong>{{ navigation_role_label|default:"unknown" }}</strong>)
                 is not allowed to open this area.
             </p>
             <p class="small text-secondary mb-4">

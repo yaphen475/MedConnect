@@ -3,6 +3,15 @@ from django import forms
 from apps.accounts.models import User
 
 
+def allowed_recipients(sender):
+    queryset = User.objects.exclude(role=User.Role.ADMIN).exclude(pk=sender.pk)
+    if sender.role == User.Role.PATIENT:
+        queryset = queryset.filter(
+            role__in=(User.Role.DOCTOR, User.Role.SECRETARY)
+        )
+    return queryset
+
+
 class ComposeForm(forms.Form):
     recipient = forms.ModelChoiceField(queryset=User.objects.none())
     body = forms.CharField(
@@ -13,14 +22,9 @@ class ComposeForm(forms.Form):
     def __init__(self, *args, sender=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.sender = sender
-        queryset = User.objects.exclude(role=User.Role.ADMIN)
+        queryset = User.objects.none()
         if sender is not None:
-            queryset = queryset.exclude(pk=sender.pk)
-            if sender.role == User.Role.PATIENT:
-                # A patient writes to the doctor or the secretary only.
-                queryset = queryset.filter(
-                    role__in=(User.Role.DOCTOR, User.Role.SECRETARY)
-                )
+            queryset = allowed_recipients(sender)
         self.fields["recipient"].queryset = queryset
         self.fields["recipient"].widget.attrs.setdefault(
             "class", "form-select"

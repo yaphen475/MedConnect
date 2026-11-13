@@ -1,8 +1,11 @@
-from datetime import date, time
+from datetime import date, time, timedelta
+from threading import Barrier, Thread
 
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from django.db import IntegrityError, close_old_connections, transaction
+from django.test import Client, TestCase, TransactionTestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from apps.agenda.models import Appointment
 from apps.agenda import services
@@ -13,6 +16,13 @@ User = get_user_model()
 # Monday 16 November 2026 — the practice is open.
 MONDAY = date(2026, 11, 16)
 SATURDAY = date(2026, 11, 21)
+
+
+def open_day_from(day, direction):
+    candidate = day + timedelta(days=direction)
+    while candidate.weekday() not in services.OPEN_WEEKDAYS:
+        candidate += timedelta(days=direction)
+    return candidate
 
 
 class AgendaTests(TestCase):
@@ -64,6 +74,21 @@ class AgendaTests(TestCase):
         self.assertNotContains(response, 'value="09:00"')
         self.assertContains(response, 'value="09:30"')
 
+    def test_duration_blocks_every_overlapping_slot(self):
+        Appointment.objects.create(
+            patient=self.file_a,
+            date=MONDAY,
+            start_time="09:00",
+            duration_minutes=60,
+            status=Appointment.Status.CONFIRMED,
+        )
+
+        self.assertFalse(
+            services.is_slot_available(MONDAY, time(9, 30))
+        )
+        self.assertNotIn(time(9, 30), services.available_slots(MONDAY))
+        self.assertTrue(services.is_slot_available(MONDAY, time(10, 0)))
+
     def test_pending_request_does_not_lock_a_slot(self):
         """RG-05: several requests can target the same slot."""
         Appointment.objects.create(
@@ -99,6 +124,42 @@ class AgendaTests(TestCase):
         self.assertEqual(appointment.requested_by, self.patient_a)
         # The slot stays available (US-06: not a definitive booking).
         self.assertTrue(services.is_slot_available(MONDAY, appointment.start_time))
+
+    def test_multiple_pending_requests_can_share_a_slot(self):
+        for user in (self.patient_a, self.patient_b):
+            self.client.force_login(user)
+            self.client.post(
+                reverse("agenda:slot_request"),
+                {
+                    "date": MONDAY.isoformat(),
+                    "start_time": "12:00",
+                },
+            )
+
+        self.assertEqual(
+            Appointment.objects.filter(
+                date=MONDAY,
+                start_time="12:00",
+                status=Appointment.Status.PENDING,
+            ).count(),
+            2,
+        )
+
+    def test_patient_cannot_request_a_past_slot(self):
+        past_day = open_day_from(timezone.localdate(), -1)
+        self.client.force_login(self.patient_a)
+
+        response = self.client.post(
+            reverse("agenda:slot_request"),
+            {
+                "date": past_day.isoformat(),
+                "start_time": "11:00",
+            },
+            follow=True,
+        )
+
+        self.assertContains(response, "no longer available")
+        self.assertFalse(Appointment.objects.filter(date=past_day).exists())
 
     def test_request_on_unavailable_slot_is_refused(self):
         Appointment.objects.create(
@@ -195,6 +256,26 @@ class AgendaTests(TestCase):
         second.refresh_from_db()
         self.assertEqual(second.status, Appointment.Status.PENDING)
 
+    def test_overlapping_pending_request_cannot_be_confirmed(self):
+        Appointment.objects.create(
+            patient=self.file_a,
+            date=MONDAY,
+            start_time="09:00",
+            duration_minutes=60,
+            status=Appointment.Status.CONFIRMED,
+        )
+        pending = self._pending("09:30", patient=self.file_b)
+        self.client.force_login(self.secretary)
+
+        response = self.client.post(
+            reverse("agenda:confirm", args=[pending.pk]),
+            follow=True,
+        )
+
+        self.assertContains(response, "overlaps an already confirmed appointment")
+        pending.refresh_from_db()
+        self.assertEqual(pending.status, Appointment.Status.PENDING)
+
     def test_refused_request_frees_the_slot(self):
         appointment = self._pending("13:00")
         self.client.force_login(self.secretary)
@@ -257,6 +338,80 @@ class AgendaTests(TestCase):
             Appointment.objects.filter(start_time="15:00").count(), 1
         )
 
+    def test_direct_appointment_outside_opening_hours_is_rejected(self):
+        self.client.force_login(self.secretary)
+
+        response = self.client.post(
+            reverse("agenda:create"),
+            {
+                "patient": self.file_a.pk,
+                "date": MONDAY.isoformat(),
+                "start_time": "17:00",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "outside the practice opening hours")
+        self.assertFalse(Appointment.objects.filter(start_time="17:00").exists())
+
+    def test_direct_appointment_in_the_past_is_rejected(self):
+        past_day = open_day_from(timezone.localdate(), -1)
+        self.client.force_login(self.secretary)
+
+        response = self.client.post(
+            reverse("agenda:create"),
+            {
+                "patient": self.file_a.pk,
+                "date": past_day.isoformat(),
+                "start_time": "11:00",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "cannot be scheduled in the past")
+        self.assertFalse(Appointment.objects.filter(date=past_day).exists())
+
+    def test_edit_rejects_overlap_with_a_longer_appointment(self):
+        Appointment.objects.create(
+            patient=self.file_a,
+            date=MONDAY,
+            start_time="09:00",
+            duration_minutes=60,
+            status=Appointment.Status.CONFIRMED,
+        )
+        appointment = Appointment.objects.create(
+            patient=self.file_b,
+            date=MONDAY,
+            start_time="10:00",
+            status=Appointment.Status.CONFIRMED,
+        )
+        self.client.force_login(self.secretary)
+
+        response = self.client.post(
+            reverse("agenda:edit", args=[appointment.pk]),
+            {
+                "patient": self.file_b.pk,
+                "date": MONDAY.isoformat(),
+                "start_time": "09:30",
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "overlaps an already confirmed appointment")
+        appointment.refresh_from_db()
+        self.assertEqual(appointment.start_time, time(10, 0))
+
+    def test_zero_duration_is_rejected_by_the_database(self):
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Appointment.objects.create(
+                    patient=self.file_a,
+                    date=MONDAY,
+                    start_time="13:30",
+                    duration_minutes=0,
+                    status=Appointment.Status.PENDING,
+                )
+
     def test_doctor_only_consults_the_agenda(self):
         self.client.force_login(self.doctor)
         response = self.client.get(reverse("agenda:view"))
@@ -311,3 +466,81 @@ class AgendaTests(TestCase):
         self.assertContains(response, "16:00")
         self.assertContains(response, "16:30")  # recent decisions block
         self.assertEqual(response.status_code, 200)
+
+
+class ConcurrentConfirmationTests(TransactionTestCase):
+    def setUp(self):
+        self.secretary = User.objects.create_user(
+            username="concurrent_sec",
+            password="Pass!2026sec",
+            role=User.Role.SECRETARY,
+        )
+        first_user = User.objects.create_user(
+            username="concurrent_a",
+            password="Pass!2026a",
+            role=User.Role.PATIENT,
+        )
+        second_user = User.objects.create_user(
+            username="concurrent_b",
+            password="Pass!2026b",
+            role=User.Role.PATIENT,
+        )
+        self.first_patient = Patient.objects.create(
+            user=first_user,
+            first_name="Concurrent",
+            last_name="One",
+        )
+        self.second_patient = Patient.objects.create(
+            user=second_user,
+            first_name="Concurrent",
+            last_name="Two",
+        )
+
+    def test_concurrent_overlapping_confirmations_keep_one_slot(self):
+        day = open_day_from(timezone.localdate(), 1)
+        first = Appointment.objects.create(
+            patient=self.first_patient,
+            date=day,
+            start_time="09:00",
+            duration_minutes=60,
+            status=Appointment.Status.PENDING,
+        )
+        second = Appointment.objects.create(
+            patient=self.second_patient,
+            date=day,
+            start_time="09:30",
+            status=Appointment.Status.PENDING,
+        )
+        clients = (Client(), Client())
+        for client in clients:
+            client.force_login(self.secretary)
+        barrier = Barrier(2)
+        errors = []
+
+        def confirm(client, appointment_pk):
+            close_old_connections()
+            try:
+                barrier.wait()
+                client.post(reverse("agenda:confirm", args=[appointment_pk]))
+            except Exception as error:
+                errors.append(error)
+            finally:
+                close_old_connections()
+
+        threads = (
+            Thread(target=confirm, args=(clients[0], first.pk)),
+            Thread(target=confirm, args=(clients[1], second.pk)),
+        )
+        for thread in threads:
+            thread.start()
+        for thread in threads:
+            thread.join()
+
+        self.assertEqual(errors, [])
+        self.assertEqual(
+            Appointment.objects.filter(
+                date=day,
+                status=Appointment.Status.CONFIRMED,
+            ).count(),
+            1,
+        )

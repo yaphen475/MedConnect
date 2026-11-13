@@ -59,6 +59,10 @@ class Appointment(models.Model):
                 condition=models.Q(status="CONFIRME"),
                 name="agenda_confirmed_slot_unique",
             ),
+            models.CheckConstraint(
+                condition=models.Q(duration_minutes__gt=0),
+                name="agenda_positive_duration",
+            ),
         ]
 
     def __str__(self):

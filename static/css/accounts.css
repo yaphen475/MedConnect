@@ -122,6 +122,26 @@ body {
     color: #fff;
 }
 
+.sidebar-link-disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.sidebar-link-disabled:hover {
+    background: transparent;
+    color: var(--medconnect-sidebar-muted);
+}
+
+.sidebar-soon {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    margin-left: auto;
+    padding: 0.2rem 0.4rem;
+    text-transform: uppercase;
+}
+
 .sidebar-link i {
     font-size: 1.1rem;
 }
@@ -277,10 +297,21 @@ body {
     transition: border-color 160ms ease, transform 160ms ease;
 }
 
+.module-card-link {
+    color: inherit;
+    text-decoration: none;
+}
+
 .module-card:target,
 .module-card:hover {
     border-color: #9bc2bf;
     transform: translateY(-2px);
+}
+
+.module-card-link:focus-visible {
+    border-color: var(--medconnect-primary);
+    box-shadow: 0 0 0 0.2rem rgba(23, 107, 115, 0.16);
+    outline: 0;
 }
 
 .module-icon {
@@ -318,6 +349,16 @@ body {
     margin-top: auto;
     padding: 0.4rem 0.7rem;
     text-transform: uppercase;
+}
+
+.module-action {
+    align-items: center;
+    color: var(--medconnect-primary);
+    display: inline-flex;
+    font-size: 0.85rem;
+    font-weight: 700;
+    gap: 0.4rem;
+    margin-top: auto;
 }
 
 .empty-state {

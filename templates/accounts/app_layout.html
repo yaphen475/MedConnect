@@ -13,15 +13,23 @@
                 <span>MedConnect</span>
             </a>
             <nav class="sidebar-navigation" aria-label="Main navigation">
-                <a class="sidebar-link active" href="{% url 'accounts:dashboard' %}" aria-current="page">
+                <a class="sidebar-link{% if section == 'dashboard' %} active{% endif %}" href="{% url 'accounts:dashboard' %}"{% if section == 'dashboard' %} aria-current="page"{% endif %}>
                     <i class="bi bi-grid"></i>
                     <span>Dashboard</span>
                 </a>
                 {% for item in navigation_items %}
-                    <a class="sidebar-link" href="#{{ item.slug }}">
-                        <i class="bi {{ item.icon }}"></i>
-                        <span>{{ item.label }}</span>
-                    </a>
+                    {% if item.url %}
+                        <a class="sidebar-link{% if section == item.section or not section and request.resolver_match.namespace == item.namespace %} active{% endif %}" href="{{ item.url }}"{% if section == item.section or not section and request.resolver_match.namespace == item.namespace %} aria-current="page"{% endif %}>
+                            <i class="bi {{ item.icon }}"></i>
+                            <span>{{ item.label }}</span>
+                        </a>
+                    {% else %}
+                        <span class="sidebar-link sidebar-link-disabled">
+                            <i class="bi {{ item.icon }}"></i>
+                            <span>{{ item.label }}</span>
+                            <span class="sidebar-soon">Soon</span>
+                        </span>
+                    {% endif %}
                 {% endfor %}
             </nav>
             <div class="sidebar-status mt-auto">
@@ -37,14 +45,14 @@
                 <i class="bi bi-list"></i>
             </button>
             <div class="top-navigation-title">
-                <span class="text-secondary small">Workspace</span>
-                <span class="fw-semibold">Dashboard</span>
+                <span class="text-secondary small">{{ navigation_role_label }}</span>
+                <span class="fw-semibold">{% block module_title %}Dashboard{% endblock %}</span>
             </div>
             <div class="top-navigation-user ms-auto">
                 <span class="user-avatar">{{ user.username|first|upper }}</span>
                 <span class="user-details d-none d-sm-flex">
                     <strong>{{ user.username }}</strong>
-                    <small>{{ role_label }}</small>
+                    <small>{{ navigation_role_label }}</small>
                 </span>
                 <form method="post" action="{% url 'accounts:logout' %}">
                     {% csrf_token %}
@@ -57,7 +65,15 @@
         </header>
 
         <main class="dashboard-content">
-            {% block dashboard_content %}{% endblock %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% block dashboard_content %}{% block module_content %}{% endblock %}{% endblock %}
         </main>
     </div>
 </div>

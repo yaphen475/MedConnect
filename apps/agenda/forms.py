@@ -34,21 +34,14 @@ class DirectAppointmentForm(forms.ModelForm):
         day = cleaned.get("date")
         start_time = cleaned.get("start_time")
         if day and start_time:
-            if start_time not in services.practice_slots(day):
-                raise ValidationError(
-                    "This time is outside the practice opening hours."
-                )
-            clash = Appointment.objects.filter(
-                date=day,
-                start_time=start_time,
-                status=Appointment.Status.CONFIRMED,
+            error = services.slot_validation_error(
+                day,
+                start_time,
+                self.instance.duration_minutes,
+                exclude_pk=self.instance.pk,
             )
-            if self.instance.pk:
-                clash = clash.exclude(pk=self.instance.pk)
-            if clash.exists():
-                raise ValidationError(
-                    "This slot already hosts a confirmed appointment."
-                )
+            if error:
+                raise ValidationError(error)
         return cleaned
 
 

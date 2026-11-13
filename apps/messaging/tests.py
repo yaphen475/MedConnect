@@ -129,6 +129,36 @@ class MessagingTests(TestCase):
             Message.objects.filter(body="cross patient message").exists()
         )
 
+    def test_patient_cannot_start_a_conversation_with_another_patient(self):
+        self.client.force_login(self.patient_a)
+
+        response = self.client.post(
+            reverse("messaging:start", args=[self.patient_b.pk])
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(
+            Conversation.objects.filter(participants=self.patient_a)
+            .filter(participants=self.patient_b)
+            .exists()
+        )
+
+    def test_user_cannot_start_a_conversation_with_self(self):
+        self.client.force_login(self.doctor)
+        initial_count = Conversation.objects.filter(
+            participants=self.doctor
+        ).count()
+
+        response = self.client.post(
+            reverse("messaging:start", args=[self.doctor.pk])
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            Conversation.objects.filter(participants=self.doctor).count(),
+            initial_count,
+        )
+
     def test_cannot_send_a_message_to_the_administrator(self):
         self.client.force_login(self.doctor)
         response = self.client.post(

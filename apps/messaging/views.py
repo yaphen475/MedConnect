@@ -6,7 +6,7 @@ from django.views.decorators.http import require_POST
 
 from apps.accounts.models import User
 from apps.core.permissions import role_required
-from apps.messaging.forms import ComposeForm
+from apps.messaging.forms import ComposeForm, allowed_recipients
 from apps.messaging.models import Conversation, Message
 
 DOCTOR = "DOCTOR"
@@ -97,8 +97,8 @@ def compose(request):
 @require_POST
 def start_with(request, pk):
     """Shortcut: open (or create) the conversation with this user."""
-    other = get_object_or_404(
-        User, pk=pk, role__in=(User.Role.DOCTOR, User.Role.SECRETARY, User.Role.PATIENT)
-    )
+    other = get_object_or_404(User, pk=pk)
+    if not allowed_recipients(request.user).filter(pk=other.pk).exists():
+        raise PermissionDenied
     conversation, _created = Conversation.direct(request.user, other)
     return redirect("messaging:thread", pk=conversation.pk)

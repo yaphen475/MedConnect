@@ -5,11 +5,11 @@
 {% block dashboard_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">{{ role_label }} workspace</span>
+        <span class="eyebrow">{{ navigation_role_label }} workspace</span>
         <h1>Welcome back, {{ user.username }}</h1>
         <p>Access the tools available for your role from one secure place.</p>
     </div>
-    <span class="role-badge"><i class="bi bi-shield-check"></i>{{ role_label }}</span>
+    <span class="role-badge"><i class="bi bi-shield-check"></i>{{ navigation_role_label }}</span>
 </section>
 
 <section aria-labelledby="workspace-title">
@@ -23,14 +23,25 @@
     <div class="row g-4">
         {% for item in navigation_items %}
             <div class="col-12 col-md-6 col-xl-4">
-                <article class="module-card h-100" id="{{ item.slug }}">
-                    <div class="module-icon"><i class="bi {{ item.icon }}"></i></div>
-                    <div class="module-card-body">
-                        <h3>{{ item.label }}</h3>
-                        <p>This module is not available yet.</p>
-                    </div>
-                    <span class="coming-soon-badge">Coming soon</span>
-                </article>
+                {% if item.url %}
+                    <a class="module-card module-card-link h-100" href="{{ item.url }}">
+                        <div class="module-icon"><i class="bi {{ item.icon }}"></i></div>
+                        <div class="module-card-body">
+                            <h3>{{ item.label }}</h3>
+                            <p>{{ item.description }}</p>
+                        </div>
+                        <span class="module-action">Open module <i class="bi bi-arrow-right"></i></span>
+                    </a>
+                {% else %}
+                    <article class="module-card h-100">
+                        <div class="module-icon"><i class="bi {{ item.icon }}"></i></div>
+                        <div class="module-card-body">
+                            <h3>{{ item.label }}</h3>
+                            <p>{{ item.description }}</p>
+                        </div>
+                        <span class="coming-soon-badge">Coming soon</span>
+                    </article>
+                {% endif %}
             </div>
         {% empty %}
             <div class="col-12">

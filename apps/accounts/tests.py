@@ -102,25 +102,38 @@ class AuthenticationTests(TestCase):
     def test_dashboard_navigation_matches_user_role(self):
         user_model = get_user_model()
         expected_navigation = {
-            user_model.Role.ADMIN: ("Users", "Settings"),
+            user_model.Role.ADMIN: (
+                ("Assistant", "chatbot:chat"),
+                ("Users", None),
+                ("Settings", None),
+            ),
             user_model.Role.DOCTOR: (
-                "Appointments",
-                "Patients",
-                "Medical Records",
+                ("Patients", "patients:list"),
+                ("Cabinet Schedule", "agenda:view"),
+                ("Medical Records", "dossiers:reports"),
+                ("Prescriptions", "dossiers:prescriptions"),
+                ("Messaging", "messaging:inbox"),
+                ("Assistant", "chatbot:chat"),
             ),
             user_model.Role.SECRETARY: (
-                "Appointment Requests",
-                "Schedule",
-                "Patients",
+                ("Patients", "patients:list"),
+                ("Cabinet Schedule", "agenda:view"),
+                ("Appointment Requests", "agenda:requests"),
+                ("Messaging", "messaging:inbox"),
+                ("Assistant", "chatbot:chat"),
             ),
             user_model.Role.PATIENT: (
-                "My Appointments",
-                "Request Appointment",
-                "Prescriptions",
+                ("My File", "patients:mine"),
+                ("Request Appointment", "agenda:slots"),
+                ("My Appointments", "agenda:my"),
+                ("My Medical Reports", "dossiers:reports"),
+                ("My Prescriptions", "dossiers:prescriptions"),
+                ("Messaging", "messaging:inbox"),
+                ("Assistant", "chatbot:chat"),
             ),
         }
 
-        for index, (role, labels) in enumerate(expected_navigation.items()):
+        for index, (role, items) in enumerate(expected_navigation.items()):
             with self.subTest(role=role):
                 user = user_model.objects.create_user(
                     username=f"navigation_test_{index}",
@@ -130,9 +143,70 @@ class AuthenticationTests(TestCase):
                 self.client.force_login(user)
                 response = self.client.get(reverse("accounts:dashboard"))
 
-                for label in labels:
+                rendered_items = response.context["navigation_items"]
+                self.assertEqual(
+                    tuple(item["label"] for item in rendered_items),
+                    tuple(label for label, url_name in items),
+                )
+                for label, url_name in items:
                     self.assertContains(response, label)
-                self.assertContains(response, "Coming soon", count=len(labels))
+                    if url_name:
+                        url = reverse(url_name)
+                        self.assertContains(
+                            response,
+                            f'class="module-card module-card-link h-100" href="{url}"',
+                            html=False,
+                        )
+                        target = self.client.get(url)
+                        self.assertNotIn(target.status_code, (403, 404))
+                expected_soon = sum(url_name is None for label, url_name in items)
+                self.assertContains(
+                    response,
+                    "Coming soon",
+                    count=expected_soon,
+                )
+
+    def test_unauthorized_module_access_returns_forbidden(self):
+        user_model = get_user_model()
+        cases = (
+            (user_model.Role.ADMIN, "patients:list"),
+            (user_model.Role.DOCTOR, "agenda:requests"),
+            (user_model.Role.SECRETARY, "dossiers:reports"),
+            (user_model.Role.PATIENT, "agenda:view"),
+        )
+
+        for index, (role, url_name) in enumerate(cases):
+            with self.subTest(role=role, url_name=url_name):
+                user = user_model.objects.create_user(
+                    username=f"forbidden_test_{index}",
+                    password=self.password,
+                    role=role,
+                )
+                self.client.force_login(user)
+                response = self.client.get(reverse(url_name))
+                self.assertEqual(response.status_code, 403)
+
+    def test_dashboard_and_modules_use_shared_layout(self):
+        self.client.force_login(self.user)
+
+        dashboard_response = self.client.get(reverse("accounts:dashboard"))
+        module_response = self.client.get(reverse("patients:list"))
+
+        self.assertTemplateUsed(
+            dashboard_response,
+            "accounts/app_layout.html",
+        )
+        self.assertTemplateUsed(module_response, "modules/layout.html")
+        self.assertTemplateUsed(
+            module_response,
+            "accounts/app_layout.html",
+        )
+        self.assertContains(module_response, 'id="appSidebar"', count=1)
+        self.assertContains(
+            module_response,
+            f'class="sidebar-link active" href="{reverse("patients:list")}"',
+            html=False,
+        )
 
 
 class DemoUsersCommandTests(TestCase):
