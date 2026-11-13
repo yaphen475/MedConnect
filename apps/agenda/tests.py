@@ -215,6 +215,38 @@ class AgendaTests(TestCase):
             services.is_slot_available(appointment.date, appointment.start_time)
         )
 
+    def test_live_updates_streams_appointment_changes_to_secretary(self):
+        appointment = self._pending()
+        since = (appointment.updated_at - timedelta(seconds=1)).isoformat()
+        self.client.force_login(self.secretary)
+
+        response = self.client.get(
+            reverse("agenda:live_updates"),
+            {"since": since},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "text/event-stream")
+
+        stream = iter(response.streaming_content)
+        try:
+            self.assertEqual(next(stream), b": connected\n\n")
+            appointment.status = Appointment.Status.CONFIRMED
+            appointment.save(update_fields=["status", "updated_at"])
+            event = next(stream)
+            self.assertIn(b"event: appointments-changed", event)
+            appointment.refresh_from_db()
+            self.assertIn(appointment.updated_at.isoformat().encode(), event)
+        finally:
+            response.close()
+
+    def test_administrator_cannot_subscribe_to_appointment_updates(self):
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse("agenda:live_updates"),
+            {"since": timezone.now().isoformat()},
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_doctor_cannot_confirm_a_request(self):
         appointment = self._pending()
         self.client.force_login(self.doctor)
@@ -416,6 +448,7 @@ class AgendaTests(TestCase):
         self.client.force_login(self.doctor)
         response = self.client.get(reverse("agenda:view"))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "data-appointment-events")
         response = self.client.post(
             reverse("agenda:create"),
             {
@@ -447,6 +480,7 @@ class AgendaTests(TestCase):
         response = self.client.get(reverse("agenda:my"))
         self.assertContains(response, "Alice motif")
         self.assertNotContains(response, "Bruno motif")
+        self.assertContains(response, "data-appointment-events")
 
     def test_patient_cannot_open_the_cabinet_agenda(self):
         self.client.force_login(self.patient_a)
@@ -465,6 +499,7 @@ class AgendaTests(TestCase):
         response = self.client.get(reverse("agenda:requests"))
         self.assertContains(response, "16:00")
         self.assertContains(response, "16:30")  # recent decisions block
+        self.assertContains(response, "data-appointment-events")
         self.assertEqual(response.status_code, 200)
 
 

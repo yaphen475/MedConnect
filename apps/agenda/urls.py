@@ -5,6 +5,7 @@ from apps.agenda import views
 app_name = "agenda"
 
 urlpatterns = [
+    path("live-updates/", views.live_updates, name="live_updates"),
     path("slots/", views.slot_list, name="slots"),
     path("slots/request/", views.slot_request, name="slot_request"),
     path("my/", views.my_appointments, name="my"),

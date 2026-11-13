@@ -4,20 +4,38 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, OperationalError, transaction
+from django.db.models import Max
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.dateparse import parse_datetime
 from django.utils import timezone
 from django.utils.translation import gettext as _
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from apps.agenda import services
 from apps.agenda.forms import DirectAppointmentForm, EditAppointmentForm
 from apps.agenda.models import Appointment
 from apps.core.permissions import role_required
+from apps.core.sse import streaming_response
 from apps.patients.models import Patient
 
 DOCTOR = "DOCTOR"
 SECRETARY = "SECRETARY"
 PATIENT = "PATIENT"
+
+
+def _appointments_visible_to(user):
+    appointments = Appointment.objects.all()
+    if user.role == PATIENT:
+        appointments = appointments.filter(patient__user=user)
+    return appointments
+
+
+def _appointment_cursor(user):
+    latest_update = _appointments_visible_to(user).aggregate(
+        latest=Max("updated_at")
+    )["latest"]
+    return (latest_update or timezone.now()).isoformat()
 
 
 def _selected_date(request):
@@ -104,11 +122,13 @@ def slot_request(request):
 @role_required(PATIENT)
 def my_appointments(request):
     """US-09 / US-10: the patient only sees his own appointments."""
+    cursor = _appointment_cursor(request.user)
     appointments = Appointment.objects.filter(
         patient__user=request.user
     ).select_related("patient")
     context = {
         "appointments": appointments,
+        "appointment_cursor": cursor,
         "section": "my-appointments",
     }
     return render(request, "agenda/my.html", context)
@@ -120,6 +140,7 @@ def my_appointments(request):
 @role_required(SECRETARY)
 def requests_list(request):
     """US-07: pending requests, accept or refuse (RG-1: secretary only)."""
+    cursor = _appointment_cursor(request.user)
     pending = (
         Appointment.objects.filter(status=Appointment.Status.PENDING)
         .select_related("patient")
@@ -131,9 +152,41 @@ def requests_list(request):
     context = {
         "pending": pending,
         "processed": processed,
+        "appointment_cursor": cursor,
         "section": "requests",
     }
     return render(request, "agenda/requests.html", context)
+
+
+@role_required(DOCTOR, SECRETARY, PATIENT)
+@require_GET
+def live_updates(request):
+    raw_cursor = request.headers.get("Last-Event-ID") or request.GET.get("since")
+    cursor = parse_datetime(raw_cursor or "")
+    if cursor is None:
+        return HttpResponseBadRequest("Invalid appointment cursor.")
+    if timezone.is_naive(cursor):
+        cursor = timezone.make_aware(cursor)
+
+    appointments = _appointments_visible_to(request.user)
+
+    def poll_appointments():
+        nonlocal cursor
+        latest_update = appointments.filter(updated_at__gt=cursor).aggregate(
+            latest=Max("updated_at")
+        )["latest"]
+        if latest_update is None:
+            return []
+        cursor = latest_update
+        return [
+            (
+                {"updated_at": latest_update.isoformat()},
+                "appointments-changed",
+                latest_update.isoformat(),
+            )
+        ]
+
+    return streaming_response(poll_appointments)
 
 
 @role_required(SECRETARY)
@@ -299,6 +352,7 @@ def agenda_cancel(request, pk):
 @role_required(DOCTOR, SECRETARY)
 def agenda_view(request):
     """US-08 / US-09: consultation of the cabinet agenda."""
+    cursor = _appointment_cursor(request.user)
     day = _selected_date(request)
     appointments = (
         Appointment.objects.filter(date=day)
@@ -312,6 +366,7 @@ def agenda_view(request):
         "next_day": _shift(day, 1),
         "available_count": len(services.available_slots(day)),
         "is_secretary": request.user.role == SECRETARY,
+        "appointment_cursor": cursor,
         "section": "agenda",
     }
     return render(request, "agenda/agenda.html", context)
