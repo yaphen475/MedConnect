@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from apps.patients.models import Patient
 
@@ -12,10 +13,10 @@ class Appointment(models.Model):
     """
 
     class Status(models.TextChoices):
-        PENDING = "EN_ATTENTE", "En attente"
-        CONFIRMED = "CONFIRME", "Confirmé"
-        REFUSED = "REFUSE", "Refusé"
-        CANCELLED = "ANNULE", "Annulé"
+        PENDING = "EN_ATTENTE", _("En attente")
+        CONFIRMED = "CONFIRME", _("Confirmé")
+        REFUSED = "REFUSE", _("Refusé")
+        CANCELLED = "ANNULE", _("Annulé")
 
     patient = models.ForeignKey(
         Patient,

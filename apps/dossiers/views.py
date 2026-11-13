@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from apps.core.permissions import role_required
@@ -60,7 +61,7 @@ def report_new(request):
             report = form.save(commit=False)
             report.author = request.user
             report.save()
-            messages.success(request, "Medical report saved.")
+            messages.success(request, _("Medical report saved."))
             return redirect(
                 "dossiers:patient_history", patient_id=report.patient_id
             )
@@ -71,7 +72,7 @@ def report_new(request):
     return render(
         request,
         "dossiers/report_form.html",
-        {"form": form, "title": "New medical report", "section": "records"},
+        {"form": form, "title": _("New medical report"), "section": "records"},
     )
 
 
@@ -106,7 +107,7 @@ def prescription_new(request):
             ]
             if not filled_lines:
                 messages.error(
-                    request, "Add at least one medication line."
+                    request, _("Add at least one medication line.")
                 )
             else:
                 with transaction.atomic():
@@ -115,7 +116,7 @@ def prescription_new(request):
                     prescription.save()
                     formset.instance = prescription
                     formset.save()
-                messages.success(request, "Prescription saved.")
+                messages.success(request, _("Prescription saved."))
                 return redirect("dossiers:prescriptions")
     else:
         form = PrescriptionForm(
@@ -128,7 +129,7 @@ def prescription_new(request):
         {
             "form": form,
             "formset": formset,
-            "title": "New prescription",
+            "title": _("New prescription"),
             "section": "prescriptions",
         },
     )
@@ -141,5 +142,5 @@ def report_delete(request, pk):
     report = get_object_or_404(MedicalReport, pk=pk)
     patient_id = report.patient_id
     report.delete()
-    messages.info(request, "Medical report deleted.")
+    messages.info(request, _("Medical report deleted."))
     return redirect("dossiers:patient_history", patient_id=patient_id)

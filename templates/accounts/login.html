@@ -1,6 +1,7 @@
 {% extends "accounts/base.html" %}
+{% load i18n %}
 
-{% block title %}Sign in | MedConnect{% endblock %}
+{% block title %}{% trans "Sign in | MedConnect" %}{% endblock %}
 
 {% block content %}
 <main class="auth-page d-flex align-items-center py-5">
@@ -11,11 +12,11 @@
                     <div class="card-body p-4 p-md-5">
                         <div class="brand-mark mx-auto mb-3">M</div>
                         <h1 class="h3 text-center mb-2">MedConnect</h1>
-                        <p class="text-secondary text-center mb-4">Secure access to your healthcare workspace</p>
+                        <p class="text-secondary text-center mb-4">{% trans "Secure access to your healthcare workspace" %}</p>
 
                         {% if form.errors %}
                             <div class="alert alert-danger" role="alert">
-                                Invalid username or password.
+                                {% trans "Invalid username or password." %}
                             </div>
                         {% endif %}
 
@@ -25,7 +26,7 @@
                                 <input type="hidden" name="next" value="{{ next }}">
                             {% endif %}
                             <div class="mb-3">
-                                <label class="form-label" for="{{ form.username.id_for_label }}">Username</label>
+                                <label class="form-label" for="{{ form.username.id_for_label }}">{% trans "Username" %}</label>
                                 <input
                                     class="form-control form-control-lg"
                                     id="{{ form.username.id_for_label }}"
@@ -38,7 +39,7 @@
                                 >
                             </div>
                             <div class="mb-4">
-                                <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+                                <label class="form-label" for="{{ form.password.id_for_label }}">{% trans "Password" %}</label>
                                 <input
                                     class="form-control form-control-lg"
                                     id="{{ form.password.id_for_label }}"
@@ -48,7 +49,7 @@
                                     required
                                 >
                             </div>
-                            <button class="btn btn-primary btn-lg w-100" type="submit">Sign in</button>
+                            <button class="btn btn-primary btn-lg w-100" type="submit">{% trans "Sign in" %}</button>
                         </form>
                     </div>
                 </section>

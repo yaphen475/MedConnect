@@ -1,18 +1,19 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}Conversation | MedConnect{% endblock %}
-{% block module_title %}Conversation{% endblock %}
+{% block title %}{% trans "Conversation | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "Conversation" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Messaging</span>
+        <span class="eyebrow">{% trans "Messaging" %}</span>
         <h1>
             {% for person in other_participants %}{{ person.username }}{% if not forloop.last %}, {% endif %}{% endfor %}
         </h1>
-        <p>Chronological history — participants only.</p>
+        <p>{% trans "Chronological history — participants only." %}</p>
     </div>
-    <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}"><i class="bi bi-arrow-left"></i> Inbox</a>
+    <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}"><i class="bi bi-arrow-left"></i> {% trans "Inbox" %}</a>
 </section>
 
 <div class="module-panel mb-4">
@@ -21,12 +22,12 @@
             <div class="message-bubble{% if message.sender == user %} mine{% endif %}">
                 <div class="message-meta">
                     {{ message.sender.username }} · {{ message.sent_at|date:'d/m/Y H:i' }}
-                    {% if message.sender == user and message.read_at %}<i class="bi bi-check2-all" title="Read"></i>{% endif %}
+                    {% if message.sender == user and message.read_at %}<i class="bi bi-check2-all" title="{% trans 'Read' %}"></i>{% endif %}
                 </div>
                 <div style="white-space: pre-wrap;">{{ message.body }}</div>
             </div>
         {% empty %}
-            <p class="text-secondary text-center mb-0">No message yet — start the conversation below.</p>
+            <p class="text-secondary text-center mb-0">{% trans "No message yet — start the conversation below." %}</p>
         {% endfor %}
     </div>
 </div>
@@ -34,9 +35,9 @@
 <form method="post" class="module-panel">
     {% csrf_token %}
     <div class="d-flex gap-2">
-        <textarea class="form-control" name="body" rows="2" placeholder="Write your message…" required></textarea>
+        <textarea class="form-control" name="body" rows="2" placeholder="{% trans 'Write your message…' %}" required></textarea>
         <button class="btn btn-info d-inline-flex align-items-center gap-2 h-100" type="submit">
-            <i class="bi bi-send"></i> Send
+            <i class="bi bi-send"></i> {% trans "Send" %}
         </button>
     </div>
 </form>

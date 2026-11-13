@@ -1,21 +1,22 @@
 {% extends "accounts/base.html" %}
+{% load i18n %}
 
 {% block content %}
 <div class="app-shell">
     <aside class="offcanvas-lg offcanvas-start app-sidebar" id="appSidebar" tabindex="-1" aria-labelledby="appSidebarLabel">
         <div class="offcanvas-header border-bottom border-light border-opacity-10 d-lg-none">
-            <h2 class="offcanvas-title h5 mb-0" id="appSidebarLabel">Navigation</h2>
-            <button class="btn-close btn-close-white" type="button" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="Close navigation"></button>
+            <h2 class="offcanvas-title h5 mb-0" id="appSidebarLabel">{% trans "Navigation" %}</h2>
+            <button class="btn-close btn-close-white" type="button" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="{% trans 'Close navigation' %}"></button>
         </div>
         <div class="offcanvas-body d-flex flex-column p-0">
             <a class="sidebar-brand" href="{% url 'accounts:dashboard' %}">
                 <span class="brand-symbol"><i class="bi bi-heart-pulse"></i></span>
                 <span>MedConnect</span>
             </a>
-            <nav class="sidebar-navigation" aria-label="Main navigation">
+            <nav class="sidebar-navigation" aria-label="{% trans 'Main navigation' %}">
                 <a class="sidebar-link{% if section == 'dashboard' %} active{% endif %}" href="{% url 'accounts:dashboard' %}"{% if section == 'dashboard' %} aria-current="page"{% endif %}>
                     <i class="bi bi-grid"></i>
-                    <span>Dashboard</span>
+                    <span>{% trans "Dashboard" %}</span>
                 </a>
                 {% for item in navigation_items %}
                     {% if item.url %}
@@ -27,26 +28,26 @@
                         <span class="sidebar-link sidebar-link-disabled">
                             <i class="bi {{ item.icon }}"></i>
                             <span>{{ item.label }}</span>
-                            <span class="sidebar-soon">Soon</span>
+                            <span class="sidebar-soon">{% trans "Soon" %}</span>
                         </span>
                     {% endif %}
                 {% endfor %}
             </nav>
             <div class="sidebar-status mt-auto">
                 <span class="status-indicator"></span>
-                <span>Secure session</span>
+                <span>{% trans "Secure session" %}</span>
             </div>
         </div>
     </aside>
 
     <div class="app-content">
         <header class="top-navigation">
-            <button class="btn mobile-menu-button d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="Open navigation">
+            <button class="btn mobile-menu-button d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="{% trans 'Open navigation' %}">
                 <i class="bi bi-list"></i>
             </button>
             <div class="top-navigation-title">
                 <span class="text-secondary small">{{ navigation_role_label }}</span>
-                <span class="fw-semibold">{% block module_title %}Dashboard{% endblock %}</span>
+                <span class="fw-semibold">{% block module_title %}{% trans "Dashboard" %}{% endblock %}</span>
             </div>
             <div class="top-navigation-user ms-auto">
                 <span class="user-avatar">{{ user.username|first|upper }}</span>
@@ -58,7 +59,7 @@
                     {% csrf_token %}
                     <button class="btn logout-button" type="submit">
                         <i class="bi bi-box-arrow-right"></i>
-                        <span class="d-none d-md-inline">Log out</span>
+                        <span class="d-none d-md-inline">{% trans "Log out" %}</span>
                     </button>
                 </form>
             </div>
@@ -69,7 +70,7 @@
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
                     </div>
                 {% endfor %}
             {% endif %}

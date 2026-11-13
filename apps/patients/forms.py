@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User
 from apps.patients.models import Patient
@@ -36,7 +37,20 @@ class PatientForm(forms.ModelForm):
             role=User.Role.PATIENT
         )
         self.fields["user"].required = False
-        self.fields["user"].empty_label = "— No account yet —"
+        self.fields["user"].empty_label = _("— No account yet —")
+        self.fields["user"].label = _("Account")
+        self.fields["first_name"].label = _("First name")
+        self.fields["last_name"].label = _("Last name")
+        self.fields["birth_date"].label = _("Birth date")
+        self.fields["phone"].label = _("Phone")
+        self.fields["email"].label = _("Email")
+        self.fields["address"].label = _("Address")
+        self.fields["social_security_number"].label = _(
+            "Social security number"
+        )
+        self.fields["administrative_notes"].label = _(
+            "Administrative notes"
+        )
 
 
 class MedicalNotesForm(forms.ModelForm):
@@ -46,3 +60,7 @@ class MedicalNotesForm(forms.ModelForm):
         model = Patient
         fields = ["medical_notes"]
         widgets = {"medical_notes": forms.Textarea(attrs={"rows": 4})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["medical_notes"].label = _("Medical notes")

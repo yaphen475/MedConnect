@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.translation import gettext as _
 
 from apps.core.permissions import role_required
 from apps.patients.forms import MedicalNotesForm, PatientForm
@@ -55,7 +56,7 @@ def patient_create(request):
                 Patient.objects.filter(pk=patient.pk).update(
                     medical_notes=medical_form.cleaned_data["medical_notes"]
                 )
-            messages.success(request, "Patient file created.")
+            messages.success(request, _("Patient file created."))
             return redirect("patients:detail", pk=patient.pk)
     else:
         form = _hide_ssn_from_secretary(PatientForm(), request.user)
@@ -67,7 +68,7 @@ def patient_create(request):
         {
             "form": form,
             "medical_form": medical_form,
-            "title": "New patient file",
+            "title": _("New patient file"),
             "show_medical": request.user.role == DOCTOR,
             "role_label": request.user.get_role_display(),
         },
@@ -101,7 +102,7 @@ def patient_mine(request):
     if profile is not None:
         return redirect("patients:detail", pk=profile.pk)
     messages.warning(
-        request, "No patient file is linked to your account yet."
+        request, _("No patient file is linked to your account yet.")
     )
     if request.user.role == PATIENT:
         return redirect("accounts:dashboard")
@@ -127,7 +128,7 @@ def patient_edit(request, pk):
             form.save()
             if request.user.role == DOCTOR and medical_form.is_valid():
                 medical_form.save()
-            messages.success(request, "Patient file updated.")
+            messages.success(request, _("Patient file updated."))
             return redirect("patients:detail", pk=patient.pk)
     else:
         form = _hide_ssn_from_secretary(
@@ -146,7 +147,7 @@ def patient_edit(request, pk):
             "form": form,
             "medical_form": medical_form,
             "patient": patient,
-            "title": f"Edit {patient}",
+            "title": _("Edit %(patient)s") % {"patient": patient},
             "show_medical": request.user.role == DOCTOR,
             "role_label": request.user.get_role_display(),
         },

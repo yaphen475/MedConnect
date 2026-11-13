@@ -1,6 +1,8 @@
-{% load static %}
+{% load static i18n %}
+{% get_current_language as CURRENT_LANGUAGE %}
+{% with LANG_CODE=CURRENT_LANGUAGE|slice:":2" %}
 <!doctype html>
-<html lang="en">
+<html lang="{{ CURRENT_LANGUAGE }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,7 +13,18 @@
     {% block extra_styles %}{% endblock %}
 </head>
 <body>
+    <div style="position: fixed; bottom: 1rem; right: 1rem; z-index: 1100; display: flex; gap: .3rem; padding: .3rem .45rem; border-radius: 999px; background: rgba(13, 202, 240, .12); border: 1px solid rgba(13, 202, 240, .35); backdrop-filter: blur(4px); font-size: .78rem; letter-spacing: .04em;">
+        <button type="button" onclick="mcSetLang('en')" title="{% trans 'Switch to English' %}" aria-label="{% trans 'Switch to English' %}" style="border: 0; border-radius: 999px; padding: .15rem .55rem; font-weight: 600; cursor: pointer; {% if LANG_CODE == 'en' %}background: rgba(13, 202, 240, .9); color: #04121a;{% else %}background: transparent; color: rgba(255, 255, 255, .7);{% endif %}">EN</button>
+        <button type="button" onclick="mcSetLang('fr')" title="{% trans 'Switch to French' %}" aria-label="{% trans 'Switch to French' %}" style="border: 0; border-radius: 999px; padding: .15rem .55rem; font-weight: 600; cursor: pointer; {% if LANG_CODE == 'fr' %}background: rgba(13, 202, 240, .9); color: #04121a;{% else %}background: transparent; color: rgba(255, 255, 255, .7);{% endif %}">FR</button>
+    </div>
+    {% endwith %}
     {% block content %}{% endblock %}
+    <script>
+        function mcSetLang(code) {
+            document.cookie = "django_language=" + code + "; path=/; max-age=31536000";
+            location.reload();
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

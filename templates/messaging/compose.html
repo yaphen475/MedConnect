@@ -1,14 +1,15 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}New message | MedConnect{% endblock %}
-{% block module_title %}New message{% endblock %}
+{% block title %}{% trans "New message | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "New message" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Internal messaging</span>
-        <h1>New message</h1>
-        <p>Select an authorised recipient — the administrator never receives messages.</p>
+        <span class="eyebrow">{% trans "Internal messaging" %}</span>
+        <h1>{% trans "New message" %}</h1>
+        <p>{% trans "Select an authorised recipient — the administrator never receives messages." %}</p>
     </div>
 </section>
 
@@ -16,18 +17,18 @@
     {% csrf_token %}
     {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
     <div class="mb-3">
-        <label class="form-label" for="{{ form.recipient.id_for_label }}">Recipient</label>
+        <label class="form-label" for="{{ form.recipient.id_for_label }}">{% trans "Recipient" %}</label>
         {{ form.recipient }}
         {% if form.recipient.errors %}<div class="text-danger small">{{ form.recipient.errors }}</div>{% endif %}
     </div>
     <div class="mb-3">
-        <label class="form-label" for="{{ form.body.id_for_label }}">Message</label>
+        <label class="form-label" for="{{ form.body.id_for_label }}">{% trans "Message" %}</label>
         {{ form.body }}
         {% if form.body.errors %}<div class="text-danger small">{{ form.body.errors }}</div>{% endif %}
     </div>
     <div class="d-flex gap-2">
-        <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit"><i class="bi bi-send"></i> Send</button>
-        <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}">Cancel</a>
+        <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit"><i class="bi bi-send"></i> {% trans "Send" %}</button>
+        <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}">{% trans "Cancel" %}</a>
     </div>
 </form>
 {% endblock %}

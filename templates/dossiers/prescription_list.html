@@ -1,23 +1,24 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}Prescriptions | MedConnect{% endblock %}
-{% block module_title %}Prescriptions{% endblock %}
+{% block title %}{% trans "Prescriptions | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "Prescriptions" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">{% if is_doctor %}Doctor{% else %}Patient{% endif %} workspace</span>
-        <h1>{% if is_doctor %}Prescriptions{% else %}My prescriptions{% endif %}</h1>
+        <span class="eyebrow">{% if is_doctor %}{% trans "Doctor workspace" %}{% else %}{% trans "Patient workspace" %}{% endif %}</span>
+        <h1>{% if is_doctor %}{% trans "Prescriptions" %}{% else %}{% trans "My prescriptions" %}{% endif %}</h1>
         <p>
             {% if is_doctor %}
-                Demonstration documents only — no medical value.
+                {% trans "Demonstration documents only — no medical value." %}
             {% else %}
-                Only your own prescriptions are shown.
+                {% trans "Only your own prescriptions are shown." %}
             {% endif %}
         </p>
     </div>
     {% if is_doctor %}
-        <a class="btn btn-info" href="{% url 'dossiers:prescription_new' %}"><i class="bi bi-capsule"></i> New prescription</a>
+        <a class="btn btn-info" href="{% url 'dossiers:prescription_new' %}"><i class="bi bi-capsule"></i> {% trans "New prescription" %}</a>
     {% endif %}
 </section>
 
@@ -31,13 +32,13 @@
                         <span class="text-secondary small">{{ prescription.issued_date|date:'d/m/Y' }}</span>
                     </div>
                     <p class="text-secondary small mb-2">
-                        Patient: {{ prescription.patient }} · Doctor: {{ prescription.author.username|default:"—" }}
+                        {% blocktrans with patient=prescription.patient doctor=prescription.author.username|default:"—" %}Patient: {{ patient }} · Doctor: {{ doctor }}{% endblocktrans %}
                     </p>
                     <ul class="mb-2">
                         {% for item in prescription.items.all %}
                             <li>{{ item.medication }}{% if item.dosage %} — {{ item.dosage }}{% endif %}{% if item.instructions %}<br><small class="text-secondary">{{ item.instructions }}</small>{% endif %}</li>
                         {% empty %}
-                            <li class="text-secondary">No line.</li>
+                            <li class="text-secondary">{% trans "No line." %}</li>
                         {% endfor %}
                     </ul>
                     {% if prescription.notes %}<p class="small mb-0">{{ prescription.notes }}</p>{% endif %}
@@ -47,14 +48,14 @@
             <div class="col-12">
                 <div class="empty-state">
                     <i class="bi bi-capsule"></i>
-                    <h3>No prescription</h3>
-                    <p>Nothing to show here yet.</p>
+                    <h3>{% trans "No prescription" %}</h3>
+                    <p>{% trans "Nothing to show here yet." %}</p>
                 </div>
             </div>
         {% endfor %}
     </div>
     <p class="text-secondary small mt-4 mb-0">
-        Demonstration documents without any medical or legal value.
+        {% trans "Demonstration documents without any medical or legal value." %}
     </p>
 </div>
 {% endblock %}

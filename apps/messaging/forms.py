@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User
 
@@ -15,7 +16,7 @@ def allowed_recipients(sender):
 class ComposeForm(forms.Form):
     recipient = forms.ModelChoiceField(queryset=User.objects.none())
     body = forms.CharField(
-        label="Message",
+        label=_("Message"),
         widget=forms.Textarea(attrs={"rows": 4, "class": "form-control"}),
     )
 
@@ -34,6 +35,6 @@ class ComposeForm(forms.Form):
         recipient = self.cleaned_data["recipient"]
         if recipient.role == User.Role.ADMIN:
             raise forms.ValidationError(
-                "The technical administrator cannot receive messages."
+                _("The technical administrator cannot receive messages.")
             )
         return recipient

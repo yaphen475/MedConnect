@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.shortcuts import render
+from django.utils.translation import gettext, gettext_lazy
 from django.views.decorators.http import require_POST
 
 from apps.chatbot import retrieval
@@ -9,10 +10,10 @@ HISTORY_KEY = "chatbot_history"
 MAX_HISTORY = 20
 
 EXAMPLES = [
-    "Quels sont les horaires d'ouverture du cabinet ?",
-    "Comment demander un rendez-vous ?",
-    "Comment retrouver mes ordonnances ?",
-    "Comment contacter la secretaire ?",
+    gettext_lazy("Quels sont les horaires d'ouverture du cabinet ?"),
+    gettext_lazy("Comment demander un rendez-vous ?"),
+    gettext_lazy("Comment retrouver mes ordonnances ?"),
+    gettext_lazy("Comment contacter la secretaire ?"),
 ]
 
 
@@ -35,7 +36,7 @@ def chat(request):
             )
             request.session[HISTORY_KEY] = history[-MAX_HISTORY:]
         else:
-            messages.warning(request, "Please type a question.")
+            messages.warning(request, gettext("Please type a question."))
         return render(
             request,
             "chatbot/chat.html",

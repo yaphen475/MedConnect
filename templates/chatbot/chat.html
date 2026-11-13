@@ -1,19 +1,20 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}Assistant | MedConnect{% endblock %}
-{% block module_title %}Assistant{% endblock %}
+{% block title %}{% trans "Assistant | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "Assistant" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Innovation 2 — RAG</span>
-        <h1>Cabinet assistant</h1>
-        <p>Answers are built from the cabinet documentary base; the sources used are displayed.</p>
+        <span class="eyebrow">{% trans "Innovation 2 — RAG" %}</span>
+        <h1>{% trans "Cabinet assistant" %}</h1>
+        <p>{% trans "Answers are built from the cabinet documentary base; the sources used are displayed." %}</p>
     </div>
     {% if history %}
         <form method="post" action="{% url 'chatbot:clear' %}">
             {% csrf_token %}
-            <button class="btn btn-outline-light" type="submit"><i class="bi bi-trash"></i> Clear</button>
+            <button class="btn btn-outline-light" type="submit"><i class="bi bi-trash"></i> {% trans "Clear" %}</button>
         </form>
     {% endif %}
 </section>
@@ -24,24 +25,24 @@
             <div class="thread" style="max-height: 24rem;">
                 {% for entry in history %}
                     <div class="message-bubble mine">
-                        <div class="message-meta"><i class="bi bi-person"></i> You</div>
+                        <div class="message-meta"><i class="bi bi-person"></i> {% trans "You" %}</div>
                         <div>{{ entry.question }}</div>
                     </div>
                     <div class="message-bubble chat-answer">
-                        <div class="message-meta"><i class="bi bi-robot"></i> MedConnect assistant</div>
+                        <div class="message-meta"><i class="bi bi-robot"></i> {% trans "MedConnect assistant" %}</div>
                         <div style="white-space: pre-wrap;">{{ entry.answer }}</div>
                         {% if entry.sources %}
                             <div class="chat-sources mt-2">
                                 <i class="bi bi-file-earmark-text"></i>
-                                Sources : {{ entry.sources|join:" · " }}
+                                {% trans "Sources" %} : {{ entry.sources|join:" · " }}
                             </div>
                         {% endif %}
                     </div>
                 {% empty %}
                     <div class="empty-state">
                         <i class="bi bi-robot"></i>
-                        <h3>Ask the assistant</h3>
-                        <p>Example questions are on the right — or type your own below.</p>
+                        <h3>{% trans "Ask the assistant" %}</h3>
+                        <p>{% trans "Example questions are on the right — or type your own below." %}</p>
                     </div>
                 {% endfor %}
             </div>
@@ -50,9 +51,9 @@
         <form method="post" action="{% url 'chatbot:chat' %}">
             {% csrf_token %}
             <div class="d-flex gap-2">
-                <input class="form-control" type="text" name="question" maxlength="300" placeholder="Your question…" autocomplete="off" required>
+                <input class="form-control" type="text" name="question" maxlength="300" placeholder="{% trans 'Your question…' %}" autocomplete="off" required>
                 <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit">
-                    <i class="bi bi-send"></i> Ask
+                    <i class="bi bi-send"></i> {% trans "Ask" %}
                 </button>
             </div>
         </form>
@@ -60,7 +61,7 @@
 
     <div class="col-12 col-lg-4">
         <div class="module-panel h-100">
-            <h2 class="h5 mb-3">Example questions</h2>
+            <h2 class="h5 mb-3">{% trans "Example questions" %}</h2>
             <form method="post" action="{% url 'chatbot:chat' %}">
                 {% csrf_token %}
                 <div class="d-grid gap-2">
@@ -74,8 +75,7 @@
             <hr class="border-light border-opacity-10">
             <p class="small text-secondary mb-0">
                 <i class="bi bi-shield-exclamation me-1"></i>
-                The assistant never gives a diagnosis or a prescription
-                and does not replace a health professional.
+                {% trans "The assistant never gives a diagnosis or a prescription and does not replace a health professional." %}
             </p>
         </div>
     </div>

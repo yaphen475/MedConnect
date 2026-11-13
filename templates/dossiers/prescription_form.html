@@ -1,4 +1,5 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
 {% block title %}{{ title }} | MedConnect{% endblock %}
 {% block module_title %}{{ title }}{% endblock %}
@@ -6,9 +7,9 @@
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Doctor workspace</span>
+        <span class="eyebrow">{% trans "Doctor workspace" %}</span>
         <h1>{{ title }}</h1>
-        <p>Prescription of demonstration — no medical value.</p>
+        <p>{% trans "Prescription of demonstration — no medical value." %}</p>
     </div>
 </section>
 
@@ -29,7 +30,7 @@
     </div>
 
     <div class="module-panel mb-4">
-        <h2 class="h5 mb-3">Medication lines</h2>
+        <h2 class="h5 mb-3">{% trans "Medication lines" %}</h2>
         {{ formset.management_form }}
         {% if formset.non_form_errors %}<div class="alert alert-danger">{{ formset.non_form_errors }}</div>{% endif %}
         <div class="row g-3">
@@ -55,8 +56,8 @@
     </div>
 
     <div class="d-flex gap-2">
-        <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit"><i class="bi bi-check-lg"></i> Save</button>
-        <a class="btn btn-outline-light" href="{% url 'dossiers:prescriptions' %}">Cancel</a>
+        <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit"><i class="bi bi-check-lg"></i> {% trans "Save" %}</button>
+        <a class="btn btn-outline-light" href="{% url 'dossiers:prescriptions' %}">{% trans "Cancel" %}</a>
     </div>
 </form>
 {% endblock %}

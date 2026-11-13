@@ -1,24 +1,25 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}Patients | MedConnect{% endblock %}
-{% block module_title %}Patients{% endblock %}
+{% block title %}{% trans "Patients | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "Patients" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">{{ navigation_role_label }} workspace</span>
-        <h1>Patient files</h1>
+        <span class="eyebrow">{{ navigation_role_label }} {% trans "workspace" %}</span>
+        <h1>{% trans "Patient files" %}</h1>
         <p>
             {% if show_medical %}
-                Full access: administrative and medical information.
+                {% trans "Full access: administrative and medical information." %}
             {% else %}
-                Administrative information only — medical fields are hidden.
+                {% trans "Administrative information only — medical fields are hidden." %}
             {% endif %}
         </p>
     </div>
     {% if can_create %}
         <a class="btn btn-info d-inline-flex align-items-center gap-2" href="{% url 'patients:create' %}">
-            <i class="bi bi-person-plus"></i> New patient
+            <i class="bi bi-person-plus"></i> {% trans "New patient" %}
         </a>
     {% endif %}
 </section>
@@ -28,11 +29,11 @@
         <table class="table module-table align-middle">
             <thead>
                 <tr>
-                    <th>Patient</th>
-                    <th>Birth date</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Account</th>
+                    <th>{% trans "Patient" %}</th>
+                    <th>{% trans "Birth date" %}</th>
+                    <th>{% trans "Phone" %}</th>
+                    <th>{% trans "Email" %}</th>
+                    <th>{% trans "Account" %}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -46,14 +47,14 @@
                         <td>{{ patient.user.username|default:"—" }}</td>
                         <td class="text-end">
                             <a class="btn btn-sm btn-outline-light" href="{% url 'patients:detail' patient.pk %}">
-                                Open <i class="bi bi-chevron-right"></i>
+                                {% trans "Open" %} <i class="bi bi-chevron-right"></i>
                             </a>
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
                         <td colspan="6" class="text-center py-4">
-                            No patient file yet.
+                            {% trans "No patient file yet." %}
                         </td>
                     </tr>
                 {% endfor %}

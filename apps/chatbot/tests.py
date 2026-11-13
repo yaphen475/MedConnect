@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import translation
 
 from apps.chatbot import retrieval
 
@@ -22,6 +23,9 @@ class ChatbotTests(TestCase):
 
     # --- US-19 : retrieval on the documentary base -------------------------
 
+    # The knowledge corpus is authored in French: assert it in French so the
+    # English catalog (which translates these strings) does not break them.
+    @translation.override("fr")
     def test_opening_hours_question_is_answered_with_sources(self):
         result = retrieval.answer(
             "Quels sont les horaires d'ouverture du cabinet ?"
@@ -29,16 +33,19 @@ class ChatbotTests(TestCase):
         self.assertIn("lundi au vendredi", result["text"])
         self.assertIn("Horaires du cabinet", result["sources"])
 
+    @translation.override("fr")
     def test_how_to_request_an_appointment_is_answered(self):
         result = retrieval.answer("Comment demander un rendez-vous ?")
         self.assertIn("secrétaire", result["text"])
         self.assertTrue(result["sources"])
 
+    @translation.override("fr")
     def test_unknown_question_falls_back(self):
         result = retrieval.answer("poussin violet de l'espace")
         self.assertIn("Je n'ai pas trouvé", result["text"])
         self.assertEqual(result["sources"], [])
 
+    @translation.override("fr")
     def test_medical_diagnosis_is_refused(self):
         """RG-13: no diagnosis, no prescription from the assistant."""
         result = retrieval.answer("Quel diagnostic pour mes maux de tete ?")

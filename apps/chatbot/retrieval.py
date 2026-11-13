@@ -48,6 +48,29 @@ STOPWORDS = {
     "cette",
     "ces",
     "comment",
+    # English stopwords (bilingual questions).
+    "the",
+    "and",
+    "for",
+    "with",
+    "what",
+    "when",
+    "how",
+    "does",
+    "you",
+    "your",
+    "can",
+    "from",
+    "this",
+    "that",
+    "are",
+    "have",
+    "has",
+    "not",
+    "any",
+    "please",
+    "tell",
+    "about",
 }
 
 DIAGNOSIS_TERMS = {
@@ -64,6 +87,21 @@ DIAGNOSIS_TERMS = {
     "traitement",
     "soigner",
     "guerir",
+    # English safety terms (RG-13 applies in every language).
+    "diagnosis",
+    "diagnose",
+    "disease",
+    "diseases",
+    "symptom",
+    "symptoms",
+    "treatment",
+    "treatments",
+    "prescribe",
+    "prescribing",
+    "cure",
+    "heal",
+    "healing",
+    "am-i",
 }
 
 
@@ -121,22 +159,27 @@ def retrieve(question, limit=3):
 
 
 def answer(question):
-    """Full pipeline: refuse medical intent → retrieve → build the answer."""
+    """Full pipeline: refuse medical intent → retrieve → build the answer.
+
+    The returned strings are plain ``str`` (forced with ``str()``) so the
+    history can be stored in the JSON session, and so the answer is frozen in
+    the language active when it was produced.
+    """
     if _wants_diagnosis(question):
         return {
-            "text": REFUSAL,
+            "text": str(REFUSAL),
             "sources": [],
             "refused": True,
         }
 
     documents = retrieve(question)
     if not documents:
-        return {"text": FALLBACK, "sources": [], "refused": False}
+        return {"text": str(FALLBACK), "sources": [], "refused": False}
 
     best = documents[0]
     text = f"{INTRO}\n\n{best['content']}"
     return {
         "text": text,
-        "sources": [doc["title"] for doc in documents],
+        "sources": [str(doc["title"]) for doc in documents],
         "refused": False,
     }

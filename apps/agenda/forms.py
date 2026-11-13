@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 from apps.agenda import services
 from apps.agenda.models import Appointment
@@ -28,6 +29,10 @@ class DirectAppointmentForm(forms.ModelForm):
         self.fields["start_time"].widget.attrs.setdefault(
             "class", "form-control"
         )
+        self.fields["patient"].label = _("Patient")
+        self.fields["date"].label = _("Date")
+        self.fields["start_time"].label = _("Start time")
+        self.fields["motif"].label = _("Reason for the visit")
 
     def clean(self):
         cleaned = super().clean()
@@ -41,7 +46,7 @@ class DirectAppointmentForm(forms.ModelForm):
                 exclude_pk=self.instance.pk,
             )
             if error:
-                raise ValidationError(error)
+                raise ValidationError(_(error))
         return cleaned
 
 

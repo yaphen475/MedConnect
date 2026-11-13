@@ -1,23 +1,24 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}Medical records | MedConnect{% endblock %}
-{% block module_title %}Medical records{% endblock %}
+{% block title %}{% trans "Medical records | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "Medical records" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">{% if is_doctor %}Doctor{% else %}Patient{% endif %} workspace</span>
-        <h1>{% if is_doctor %}Medical reports{% else %}My medical reports{% endif %}</h1>
+        <span class="eyebrow">{% if is_doctor %}{% trans "Doctor workspace" %}{% else %}{% trans "Patient workspace" %}{% endif %}</span>
+        <h1>{% if is_doctor %}{% trans "Medical reports" %}{% else %}{% trans "My medical reports" %}{% endif %}</h1>
         <p>
             {% if is_doctor %}
-                Comptes rendus of every consultation — hidden from the secretary.
+                {% trans "Comptes rendus of every consultation — hidden from the secretary." %}
             {% else %}
-                Your own consultations, in chronological order.
+                {% trans "Your own consultations, in chronological order." %}
             {% endif %}
         </p>
     </div>
     {% if is_doctor %}
-        <a class="btn btn-info" href="{% url 'dossiers:report_new' %}"><i class="bi bi-file-earmark-plus"></i> New report</a>
+        <a class="btn btn-info" href="{% url 'dossiers:report_new' %}"><i class="bi bi-file-earmark-plus"></i> {% trans "New report" %}</a>
     {% endif %}
 </section>
 
@@ -26,10 +27,10 @@
         <table class="table module-table align-middle">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Patient</th>
-                    <th>Title</th>
-                    <th>Doctor</th>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Patient" %}</th>
+                    <th>{% trans "Title" %}</th>
+                    <th>{% trans "Doctor" %}</th>
                     {% if is_doctor %}<th></th>{% endif %}
                 </tr>
             </thead>
@@ -47,13 +48,13 @@
                         <td>{{ report.author.username|default:"—" }}</td>
                         {% if is_doctor %}
                             <td class="text-end">
-                                <a class="btn btn-sm btn-outline-light" href="{% url 'dossiers:patient_history' report.patient_id %}">History</a>
+                                <a class="btn btn-sm btn-outline-light" href="{% url 'dossiers:patient_history' report.patient_id %}">{% trans "History" %}</a>
                             </td>
                         {% endif %}
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-4">No medical report yet.</td>
+                        <td colspan="5" class="text-center py-4">{% trans "No medical report yet." %}</td>
                     </tr>
                 {% endfor %}
             </tbody>

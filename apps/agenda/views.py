@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError, OperationalError, transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from apps.agenda import services
@@ -59,12 +60,15 @@ def slot_request(request):
     try:
         start_time = timezone.datetime.strptime(raw_time, "%H:%M").time()
     except ValueError:
-        messages.error(request, "Please choose one of the proposed slots.")
+        messages.error(
+            request, _("Please choose one of the proposed slots.")
+        )
         return redirect("agenda:slots")
 
     if not services.is_slot_available(day, start_time):
         messages.error(
-            request, "This slot is no longer available, please pick another one."
+            request,
+            _("This slot is no longer available, please pick another one."),
         )
         return redirect("agenda:slots")
 
@@ -85,8 +89,14 @@ def slot_request(request):
     )
     messages.success(
         request,
-        f"Request sent for {appointment.date:%d/%m/%Y} at "
-        f"{appointment.start_time:%H:%M} — waiting for the secretary.",
+        _(
+            "Request sent for %(date)s at %(time)s — waiting for the "
+            "secretary."
+        )
+        % {
+            "date": f"{appointment.date:%d/%m/%Y}",
+            "time": f"{appointment.start_time:%H:%M}",
+        },
     )
     return redirect("agenda:my")
 
@@ -143,7 +153,7 @@ def confirm_request(request, pk):
             )
             if appointment.status != Appointment.Status.PENDING:
                 raise ValidationError(
-                    "This request has already been processed."
+                    _("This request has already been processed.")
                 )
             error = services.slot_validation_error(
                 appointment.date,
@@ -153,7 +163,7 @@ def confirm_request(request, pk):
                 lock=True,
             )
             if error:
-                raise ValidationError(error)
+                raise ValidationError(_(error))
             appointment.status = Appointment.Status.CONFIRMED
             appointment.processed_by = request.user
             appointment.save(
@@ -164,13 +174,22 @@ def confirm_request(request, pk):
     except (IntegrityError, OperationalError):
         messages.error(
             request,
-            "The appointment could not be confirmed because the schedule changed.",
+            _(
+                "The appointment could not be confirmed because the schedule changed."
+            ),
         )
     else:
         messages.success(
             request,
-            f"Appointment confirmed for {appointment.patient} "
-            f"on {appointment.date:%d/%m/%Y} at {appointment.start_time:%H:%M}.",
+            _(
+                "Appointment confirmed for %(patient)s on %(date)s at "
+                "%(time)s."
+            )
+            % {
+                "patient": appointment.patient,
+                "date": f"{appointment.date:%d/%m/%Y}",
+                "time": f"{appointment.start_time:%H:%M}",
+            },
         )
     return redirect("agenda:requests")
 
@@ -180,12 +199,14 @@ def confirm_request(request, pk):
 def refuse_request(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
     if appointment.status != Appointment.Status.PENDING:
-        messages.error(request, "This request has already been processed.")
+        messages.error(
+            request, _("This request has already been processed.")
+        )
         return redirect("agenda:requests")
     appointment.status = Appointment.Status.REFUSED
     appointment.processed_by = request.user
     appointment.save(update_fields=["status", "processed_by", "updated_at"])
-    messages.info(request, "Request refused. The slot stays available.")
+    messages.info(request, _("Request refused. The slot stays available."))
     return redirect("agenda:requests")
 
 
@@ -204,17 +225,21 @@ def agenda_create(request):
             except (IntegrityError, OperationalError):
                 form.add_error(
                     None,
-                    "The appointment could not be saved because the schedule changed.",
+                    _("The appointment could not be saved because the schedule changed."),
                 )
             else:
-                messages.success(request, "Appointment added to the agenda.")
+                messages.success(request, _("Appointment added to the agenda."))
                 return redirect("agenda:view")
     else:
         form = DirectAppointmentForm(initial={"date": _selected_date(request)})
     return render(
         request,
         "agenda/appointment_form.html",
-        {"form": form, "title": "New appointment", "section": "agenda"},
+        {
+            "form": form,
+            "title": _("New appointment"),
+            "section": "agenda",
+        },
     )
 
 
@@ -230,10 +255,10 @@ def agenda_edit(request, pk):
             except (IntegrityError, OperationalError):
                 form.add_error(
                     None,
-                    "The appointment could not be saved because the schedule changed.",
+                    _("The appointment could not be saved because the schedule changed."),
                 )
             else:
-                messages.success(request, "Appointment updated.")
+                messages.success(request, _("Appointment updated."))
                 return redirect("agenda:view")
     else:
         form = EditAppointmentForm(instance=appointment)
@@ -242,7 +267,8 @@ def agenda_edit(request, pk):
         "agenda/appointment_form.html",
         {
             "form": form,
-            "title": f"Edit appointment #{appointment.pk}",
+            "title": _("Edit appointment #%(pk)s")
+            % {"pk": appointment.pk},
             "appointment": appointment,
             "section": "agenda",
         },
@@ -254,13 +280,15 @@ def agenda_edit(request, pk):
 def agenda_cancel(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
     if appointment.status != Appointment.Status.CONFIRMED:
-        messages.error(request, "Only a confirmed appointment can be cancelled.")
+        messages.error(
+            request, _("Only a confirmed appointment can be cancelled.")
+        )
         return redirect("agenda:view")
     appointment.status = Appointment.Status.CANCELLED
     appointment.processed_by = request.user
     appointment.save(update_fields=["status", "processed_by", "updated_at"])
     messages.info(
-        request, "Appointment cancelled, the slot is available again."
+        request, _("Appointment cancelled, the slot is available again.")
     )
     return redirect("agenda:view")
 

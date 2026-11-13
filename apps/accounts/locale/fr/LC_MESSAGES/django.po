@@ -1,0 +1,1139 @@
+# MedConnect translations (fr).
+# Copyright (C) 2026 ENSIM Microprojet team
+# This file is distributed under the same license as the MedConnect package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: MedConnect 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-11-13 12:00+0100\n"
+"Last-Translator: MedConnect team\n"
+"Language-Team: fr\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\apps\accounts\models.py:8
+msgid "Administrateur technique"
+msgstr "Administrateur technique"
+
+#: .\apps\accounts\models.py:9
+msgid "Médecin"
+msgstr "Médecin"
+
+#: .\apps\accounts\models.py:10
+msgid "Secrétaire médicale"
+msgstr "Secrétaire médicale"
+
+#: .\apps\accounts\models.py:11 .\apps\accounts\views.py:70
+#: .\apps\agenda\forms.py:32 .\apps\dossiers\forms.py:26
+#: .\apps\dossiers\forms.py:49 .\templates\agenda\agenda.html:36
+#: .\templates\agenda\requests.html:23 .\templates\agenda\requests.html:64
+#: .\templates\dossiers\reports.html:31 .\templates\patients\list.html:32
+msgid "Patient"
+msgstr "Patient"
+
+#: .\apps\accounts\views.py:10
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: .\apps\accounts\views.py:11
+msgid "Settings"
+msgstr "Paramètres"
+
+#: .\apps\accounts\views.py:15
+msgid "Appointments"
+msgstr "Rendez-vous"
+
+#: .\apps\accounts\views.py:20 .\apps\accounts\views.py:42
+#: .\templates\modules\layout.html:25 .\templates\patients\list.html:5
+msgid "Patients"
+msgstr "Patients"
+
+#: .\apps\accounts\views.py:25
+msgid "Medical Records"
+msgstr "Dossiers médicaux"
+
+#: .\apps\accounts\views.py:32
+msgid "Appointment Requests"
+msgstr "Demandes de rendez-vous"
+
+#: .\apps\accounts\views.py:37
+msgid "Schedule"
+msgstr "Planning"
+
+#: .\apps\accounts\views.py:49
+msgid "My Appointments"
+msgstr "Mes rendez-vous"
+
+#: .\apps\accounts\views.py:54
+msgid "Request Appointment"
+msgstr "Demander un rendez-vous"
+
+#: .\apps\accounts\views.py:59 .\templates\dossiers\history.html:41
+#: .\templates\dossiers\prescription_list.html:5
+#: .\templates\dossiers\prescription_list.html:11
+#: .\templates\modules\layout.html:64
+msgid "Prescriptions"
+msgstr "Ordonnances"
+
+#: .\apps\accounts\views.py:67
+msgid "Technical administrator"
+msgstr "Administrateur technique"
+
+#: .\apps\accounts\views.py:68 .\templates\dossiers\reports.html:33
+msgid "Doctor"
+msgstr "Médecin"
+
+#: .\apps\accounts\views.py:69
+msgid "Medical secretary"
+msgstr "Secrétaire médicale"
+
+#: .\apps\agenda\forms.py:33 .\templates\agenda\my.html:22
+#: .\templates\dossiers\reports.html:30 .\templates\messaging\inbox.html:24
+msgid "Date"
+msgstr "Date"
+
+#: .\apps\agenda\forms.py:34
+msgid "Start time"
+msgstr "Heure de début"
+
+#: .\apps\agenda\forms.py:35
+msgid "Reason for the visit"
+msgstr "Motif de la visite"
+
+#: .\apps\agenda\forms.py:45
+msgid "This time is outside the practice opening hours."
+msgstr "Ce créneau est en dehors des heures d'ouverture du cabinet."
+
+#: .\apps\agenda\forms.py:58
+msgid "This slot already hosts a confirmed appointment."
+msgstr "Ce créneau accueille déjà un rendez-vous confirmé."
+
+#: .\apps\agenda\models.py:16
+msgid "En attente"
+msgstr "En attente"
+
+#: .\apps\agenda\models.py:17
+msgid "Confirmé"
+msgstr "Confirmé"
+
+#: .\apps\agenda\models.py:18
+msgid "Refusé"
+msgstr "Refusé"
+
+#: .\apps\agenda\models.py:19
+msgid "Annulé"
+msgstr "Annulé"
+
+#: .\apps\agenda\views.py:62
+msgid "Please choose one of the proposed slots."
+msgstr "Veuillez choisir l'un des créneaux proposés."
+
+#: .\apps\agenda\views.py:69
+msgid "This slot is no longer available, please pick another one."
+msgstr "Ce créneau n'est plus disponible, veuillez en choisir un autre."
+
+#: .\apps\agenda\views.py:91
+#, python-format
+msgid "Request sent for %(date)s at %(time)s — waiting for the secretary."
+msgstr "Demande envoyée pour le %(date)s à %(time)s — en attente de la secrétaire."
+
+#: .\apps\agenda\views.py:144 .\apps\agenda\views.py:189
+msgid "This request has already been processed."
+msgstr "Cette demande a déjà été traitée."
+
+#: .\apps\agenda\views.py:163
+msgid "Impossible: another appointment already confirmed on this slot."
+msgstr "Impossible : un autre rendez-vous est déjà confirmé sur ce créneau."
+
+#: .\apps\agenda\views.py:171
+#, python-format
+msgid "Appointment confirmed for %(patient)s on %(date)s at %(time)s."
+msgstr "Rendez-vous confirmé pour %(patient)s le %(date)s à %(time)s."
+
+#: .\apps\agenda\views.py:195
+msgid "Request refused. The slot stays available."
+msgstr "Demande refusée. Le créneau reste disponible."
+
+#: .\apps\agenda\views.py:209
+msgid "Appointment added to the agenda."
+msgstr "Rendez-vous ajouté au planning."
+
+#: .\apps\agenda\views.py:218 .\templates\agenda\agenda.html:15
+msgid "New appointment"
+msgstr "Nouveau rendez-vous"
+
+#: .\apps\agenda\views.py:231
+msgid "Appointment updated."
+msgstr "Rendez-vous mis à jour."
+
+#: .\apps\agenda\views.py:240
+#, python-format
+msgid "Edit appointment #%(pk)s"
+msgstr "Modifier le rendez-vous n°%(pk)s"
+
+#: .\apps\agenda\views.py:254
+msgid "Only a confirmed appointment can be cancelled."
+msgstr "Seul un rendez-vous confirmé peut être annulé."
+
+#: .\apps\agenda\views.py:261
+msgid "Appointment cancelled, the slot is available again."
+msgstr "Rendez-vous annulé, le créneau est de nouveau libre."
+
+#: .\apps\chatbot\knowledge.py:18
+msgid "Horaires du cabinet"
+msgstr "Horaires du cabinet"
+
+#: .\apps\chatbot\knowledge.py:37
+msgid "Le cabinet est ouvert du lundi au vendredi, de 9h00 a 17h00. Les rendez-vous sont proposés par créneaux de 30 minutes. Le cabinet est fermé le samedi et le dimanche."
+msgstr "Le cabinet est ouvert du lundi au vendredi, de 9h00 a 17h00. Les rendez-vous sont proposés par créneaux de 30 minutes. Le cabinet est fermé le samedi et le dimanche."
+
+#: .\apps\chatbot\knowledge.py:44
+msgid "Demander un rendez-vous"
+msgstr "Demander un rendez-vous"
+
+#: .\apps\chatbot\knowledge.py:65
+msgid "Connectez-vous à votre espace patient puis ouvrez « Request an appointment ». Les créneaux libres sont détectés automatiquement : choisissez un créneau et envoyez votre demande. Votre demande reste « En attente » : seule la secrétaire la confirme. Une demande n'est pas une réservation définitive."
+msgstr "Connectez-vous à votre espace patient puis ouvrez « Request an appointment ». Les créneaux libres sont détectés automatiquement : choisissez un créneau et envoyez votre demande. Votre demande reste « En attente » : seule la secrétaire la confirme. Une demande n'est pas une réservation définitive."
+
+#: .\apps\chatbot\knowledge.py:74
+msgid "Suivre mes demandes et rendez-vous"
+msgstr "Suivre mes demandes et rendez-vous"
+
+#: .\apps\chatbot\knowledge.py:93
+msgid "Ouvrez « My appointments » : chaque demande affiche son statut (En attente, Confirmé, Refusé ou Annulé). Une confirmation ou un refus apparaît automatiquement dans votre espace personnel."
+msgstr "Ouvrez « My appointments » : chaque demande affiche son statut (En attente, Confirmé, Refusé ou Annulé). Une confirmation ou un refus apparaît automatiquement dans votre espace personnel."
+
+#: .\apps\chatbot\knowledge.py:100
+msgid "Retrouver mes ordonnances"
+msgstr "Retrouver mes ordonnances"
+
+#: .\apps\chatbot\knowledge.py:113
+msgid "Depuis votre espace patient, ouvrez « My prescriptions » : vous voyez uniquement vos propres ordonnances, datées et signées par votre médecin. Les documents présentés sont des démonstrations sans valeur médicale. Votre médecin rédige une nouvelle ordonnance depuis l'espace Prescriptions."
+msgstr "Depuis votre espace patient, ouvrez « My prescriptions » : vous voyez uniquement vos propres ordonnances, datées et signées par votre médecin. Les documents présentés sont des démonstrations sans valeur médicale. Votre médecin rédige une nouvelle ordonnance depuis l'espace Prescriptions."
+
+#: .\apps\chatbot\knowledge.py:122
+msgid "Comptes rendus de consultation"
+msgstr "Comptes rendus de consultation"
+
+#: .\apps\chatbot\knowledge.py:136
+msgid "Le médecin rédige un compte rendu après chaque consultation : il est enregistré dans l'historique du patient, présenté de manière chronologique. Seul le médecin y accède : la secrétaire et l'administrateur technique n'ont aucun accès aux données médicales."
+msgstr "Le médecin rédige un compte rendu après chaque consultation : il est enregistré dans l'historique du patient, présenté de manière chronologique. Seul le médecin y accède : la secrétaire et l'administrateur technique n'ont aucun accès aux données médicales."
+
+#: .\apps\chatbot\knowledge.py:145
+msgid "Contacter la secrétaire"
+msgstr "Contacter la secrétaire"
+
+#: .\apps\chatbot\knowledge.py:160
+msgid "Utilisez la messagerie interne : ouvrez « New message », sélectionnez la secrétaire et envoyez votre message. La secrétaire reçoit votre message et vous répond dans le même fil. Seuls les participants d'une conversation peuvent la lire."
+msgstr "Utilisez la messagerie interne : ouvrez « New message », sélectionnez la secrétaire et envoyez votre message. La secrétaire reçoit votre message et vous répond dans le même fil. Seuls les participants d'une conversation peuvent la lire."
+
+#: .\apps\chatbot\knowledge.py:168
+msgid "Confidentialité et rôles"
+msgstr "Confidentialité et rôles"
+
+#: .\apps\chatbot\knowledge.py:186
+msgid "Chaque profil accède uniquement à ses droits : le médecin aux données médicales, la secrétaire aux données administratives, le patient à ses propres informations. L'administrateur technique gère les comptes mais n'a aucun accès automatique aux données médicales ni au contenu des messages."
+msgstr "Chaque profil accède uniquement à ses droits : le médecin aux données médicales, la secrétaire aux données administratives, le patient à ses propres informations. L'administrateur technique gère les comptes mais n'a aucun accès automatique aux données médicales ni au contenu des messages."
+
+#: .\apps\chatbot\knowledge.py:195
+msgid "Confirmation et annulation"
+msgstr "Confirmation et annulation"
+
+#: .\apps\chatbot\knowledge.py:210
+msgid "Seule la secrétaire confirme ou refuse une demande de rendez-vous. Un rendez-vous confirmé rend son créneau indisponible et un créneau ne peut accueillir qu'un seul rendez-vous confirmé. Annuler un rendez-vous confirmé rend le créneau à nouveau libre."
+msgstr "Seule la secrétaire confirme ou refuse une demande de rendez-vous. Un rendez-vous confirmé rend son créneau indisponible et un créneau ne peut accueillir qu'un seul rendez-vous confirmé. Annuler un rendez-vous confirmé rend le créneau à nouveau libre."
+
+#: .\apps\chatbot\knowledge.py:219
+msgid "Je ne peux pas répondre à cette question : l'assistant ne fournit jamais de diagnostic, de conseil médical ni de prescription. Pour un avis médical, contactez votre médecin ou la secrétaire du cabinet."
+msgstr "Je ne peux pas répondre à cette question : l'assistant ne fournit jamais de diagnostic, de conseil médical ni de prescription. Pour un avis médical, contactez votre médecin ou la secrétaire du cabinet."
+
+#: .\apps\chatbot\knowledge.py:226
+msgid "Je n'ai pas trouvé de document correspondant à votre question. Essayez par exemple : « Quels sont les horaires d'ouverture ? », « Comment demander un rendez-vous ? », « Comment retrouver mes ordonnances ? » ou « Comment contacter la secrétaire ? »."
+msgstr "Je n'ai pas trouvé de document correspondant à votre question. Essayez par exemple : « Quels sont les horaires d'ouverture ? », « Comment demander un rendez-vous ? », « Comment retrouver mes ordonnances ? » ou « Comment contacter la secrétaire ? »."
+
+#: .\apps\chatbot\knowledge.py:233
+msgid "D'après la base documentaire du cabinet, voici l'information utile :"
+msgstr "D'après la base documentaire du cabinet, voici l'information utile :"
+
+#: .\apps\chatbot\views.py:13
+msgid "Quels sont les horaires d'ouverture du cabinet ?"
+msgstr "Quels sont les horaires d'ouverture du cabinet ?"
+
+#: .\apps\chatbot\views.py:14
+msgid "Comment demander un rendez-vous ?"
+msgstr "Comment demander un rendez-vous ?"
+
+#: .\apps\chatbot\views.py:15
+msgid "Comment retrouver mes ordonnances ?"
+msgstr "Comment retrouver mes ordonnances ?"
+
+#: .\apps\chatbot\views.py:16
+msgid "Comment contacter la secretaire ?"
+msgstr "Comment contacter la secretaire ?"
+
+#: .\apps\chatbot\views.py:39
+msgid "Please type a question."
+msgstr "Veuillez saisir une question."
+
+#: .\apps\dossiers\forms.py:27
+msgid "Consultation date"
+msgstr "Date de consultation"
+
+#: .\apps\dossiers\forms.py:28 .\apps\dossiers\forms.py:51
+#: .\templates\dossiers\reports.html:32
+msgid "Title"
+msgstr "Titre"
+
+#: .\apps\dossiers\forms.py:29
+msgid "Content"
+msgstr "Contenu"
+
+#: .\apps\dossiers\forms.py:50
+msgid "Issued date"
+msgstr "Date d'émission"
+
+#: .\apps\dossiers\forms.py:52
+msgid "Notes"
+msgstr "Notes"
+
+#: .\apps\dossiers\forms.py:67
+msgid "Medication"
+msgstr "Médicament"
+
+#: .\apps\dossiers\forms.py:68
+msgid "Dosage"
+msgstr "Posologie"
+
+#: .\apps\dossiers\forms.py:69
+msgid "Instructions"
+msgstr "Instructions"
+
+#: .\apps\dossiers\views.py:64
+msgid "Medical report saved."
+msgstr "Compte rendu médical enregistré."
+
+#: .\apps\dossiers\views.py:75
+msgid "New medical report"
+msgstr "Nouveau compte rendu médical"
+
+#: .\apps\dossiers\views.py:110
+msgid "Add at least one medication line."
+msgstr "Ajoutez au moins une ligne de médicament."
+
+#: .\apps\dossiers\views.py:119
+msgid "Prescription saved."
+msgstr "Ordonnance enregistrée."
+
+#: .\apps\dossiers\views.py:132 .\templates\dossiers\prescription_list.html:21
+msgid "New prescription"
+msgstr "Nouvelle ordonnance"
+
+#: .\apps\dossiers\views.py:145
+msgid "Medical report deleted."
+msgstr "Compte rendu médical supprimé."
+
+#: .\apps\messaging\forms.py:10 .\templates\messaging\compose.html:25
+msgid "Message"
+msgstr "Message"
+
+#: .\apps\messaging\forms.py:34
+msgid "The technical administrator cannot receive messages."
+msgstr "L'administrateur technique ne peut pas recevoir de messages."
+
+#: .\apps\messaging\views.py:53
+msgid "The message cannot be empty."
+msgstr "Le message ne peut pas être vide."
+
+#: .\apps\messaging\views.py:86
+msgid "Message sent."
+msgstr "Message envoyé."
+
+#: .\apps\patients\forms.py:40
+msgid "— No account yet —"
+msgstr "— Aucun compte encore —"
+
+#: .\apps\patients\forms.py:41 .\templates\patients\list.html:36
+msgid "Account"
+msgstr "Compte"
+
+#: .\apps\patients\forms.py:42 .\templates\patients\detail.html:29
+msgid "First name"
+msgstr "Prénom"
+
+#: .\apps\patients\forms.py:43 .\templates\patients\detail.html:30
+msgid "Last name"
+msgstr "Nom"
+
+#: .\apps\patients\forms.py:44 .\templates\patients\detail.html:31
+#: .\templates\patients\list.html:33
+msgid "Birth date"
+msgstr "Date de naissance"
+
+#: .\apps\patients\forms.py:45 .\templates\patients\list.html:34
+msgid "Phone"
+msgstr "Téléphone"
+
+#: .\apps\patients\forms.py:46 .\templates\patients\list.html:35
+msgid "Email"
+msgstr "E-mail"
+
+#: .\apps\patients\forms.py:47 .\templates\patients\detail.html:32
+msgid "Address"
+msgstr "Adresse"
+
+#: .\apps\patients\forms.py:49 .\templates\patients\detail.html:33
+msgid "Social security number"
+msgstr "Numéro de sécurité sociale"
+
+#: .\apps\patients\forms.py:52 .\templates\patients\detail.html:41
+msgid "Administrative notes"
+msgstr "Notes administratives"
+
+#: .\apps\patients\forms.py:66 .\templates\patients\form.html:40
+msgid "Medical notes"
+msgstr "Notes médicales"
+
+#: .\apps\patients\views.py:59
+msgid "Patient file created."
+msgstr "Fiche patient créée."
+
+#: .\apps\patients\views.py:71
+msgid "New patient file"
+msgstr "Nouvelle fiche patient"
+
+#: .\apps\patients\views.py:105
+msgid "No patient file is linked to your account yet."
+msgstr "Aucune fiche patient n'est encore liée à votre compte."
+
+#: .\apps\patients\views.py:131
+msgid "Patient file updated."
+msgstr "Fiche patient mise à jour."
+
+#: .\apps\patients\views.py:150
+#, python-format
+msgid "Edit %(patient)s"
+msgstr "Modifier %(patient)s"
+
+#: .\templates\403.html:4
+msgid "403 — Access restricted | MedConnect"
+msgstr "403 — Accès restreint | MedConnect"
+
+#: .\templates\403.html:11
+msgid "403 — Access restricted"
+msgstr "403 — Accès restreint"
+
+#: .\templates\403.html:14
+#, python-format
+msgid "Your profile (<strong>%(role)s</strong>) is not allowed to open this area."
+msgstr "Votre profil (<strong>%(role)s</strong>) n'est pas autorisé à ouvrir cette zone."
+
+#: .\templates\403.html:17
+msgid "Each role only accesses the data it needs. The technical administrator never sees patient data, medical records or private conversations."
+msgstr "Chaque rôle n'accède qu'aux données dont il a besoin. L'administrateur technique ne voit jamais les données patients, les dossiers médicaux ni les conversations privées."
+
+#: .\templates\403.html:20
+msgid "Back to dashboard"
+msgstr "Retour au tableau de bord"
+
+#: .\templates\403.html:23
+msgid "You need to sign in to open this area."
+msgstr "Vous devez vous connecter pour ouvrir cette zone."
+
+#: .\templates\403.html:25 .\templates\accounts\login.html:52
+msgid "Sign in"
+msgstr "Se connecter"
+
+#: .\templates\accounts\app_layout.html:8 .\templates\modules\layout.html:9
+msgid "Navigation"
+msgstr "Navigation"
+
+#: .\templates\accounts\app_layout.html:9 .\templates\modules\layout.html:10
+msgid "Close navigation"
+msgstr "Fermer la navigation"
+
+#: .\templates\accounts\app_layout.html:16 .\templates\modules\layout.html:17
+msgid "Main navigation"
+msgstr "Navigation principale"
+
+#: .\templates\accounts\app_layout.html:19
+#: .\templates\accounts\app_layout.html:42 .\templates\modules\layout.html:20
+msgid "Dashboard"
+msgstr "Tableau de bord"
+
+#: .\templates\accounts\app_layout.html:30 .\templates\modules\layout.html:91
+msgid "Secure session"
+msgstr "Session sécurisée"
+
+#: .\templates\accounts\app_layout.html:37 .\templates\modules\layout.html:98
+msgid "Open navigation"
+msgstr "Ouvrir la navigation"
+
+#: .\templates\accounts\app_layout.html:41
+msgid "Workspace"
+msgstr "Espace de travail"
+
+#: .\templates\accounts\app_layout.html:54 .\templates\modules\layout.html:115
+msgid "Log out"
+msgstr "Se déconnecter"
+
+#: .\templates\accounts\base.html:15
+msgid "Switch to English"
+msgstr "Passer en anglais"
+
+#: .\templates\accounts\base.html:16
+msgid "Switch to French"
+msgstr "Passer en français"
+
+#: .\templates\accounts\dashboard.html:4
+msgid "Dashboard | MedConnect"
+msgstr "Tableau de bord | MedConnect"
+
+#: .\templates\accounts\dashboard.html:9 .\templates\patients\list.html:10
+#, python-format
+msgid "%(role_label)s workspace"
+msgstr "%(role_label)s — espace de travail"
+
+#: .\templates\accounts\dashboard.html:10
+#, python-format
+msgid "Welcome back, %(user.username)s"
+msgstr "Content de vous revoir, %(user.username)s"
+
+#: .\templates\accounts\dashboard.html:11
+msgid "Access the tools available for your role from one secure place."
+msgstr "Accédez aux outils de votre rôle depuis un seul endroit sécurisé."
+
+#: .\templates\accounts\dashboard.html:19
+msgid "Your workspace"
+msgstr "Votre espace de travail"
+
+#: .\templates\accounts\dashboard.html:20
+msgid "Additional healthcare management modules will become available here."
+msgstr "D'autres modules de gestion de santé seront bientôt disponibles ici."
+
+#: .\templates\accounts\dashboard.html:31
+msgid "This module is not available yet."
+msgstr "Ce module n'est pas encore disponible."
+
+#: .\templates\accounts\dashboard.html:33
+#: .\templates\accounts\dashboard.html:40
+msgid "Coming soon"
+msgstr "Bientôt disponible"
+
+#: .\templates\accounts\dashboard.html:41
+msgid "Your workspace modules are being prepared."
+msgstr "Les modules de votre espace sont en préparation."
+
+#: .\templates\accounts\login.html:4
+msgid "Sign in | MedConnect"
+msgstr "Connexion | MedConnect"
+
+#: .\templates\accounts\login.html:15
+msgid "Secure access to your healthcare workspace"
+msgstr "Accès sécurisé à votre espace de santé"
+
+#: .\templates\accounts\login.html:19
+msgid "Invalid username or password."
+msgstr "Identifiant ou mot de passe invalide."
+
+#: .\templates\accounts\login.html:29
+msgid "Username"
+msgstr "Identifiant"
+
+#: .\templates\accounts\login.html:42
+msgid "Password"
+msgstr "Mot de passe"
+
+#: .\templates\agenda\agenda.html:4
+msgid "Cabinet schedule | MedConnect"
+msgstr "Planning du cabinet | MedConnect"
+
+#: .\templates\agenda\agenda.html:5 .\templates\modules\layout.html:37
+msgid "Cabinet schedule"
+msgstr "Planning du cabinet"
+
+#: .\templates\agenda\agenda.html:10
+msgid "Agenda"
+msgstr "Agenda"
+
+#: .\templates\agenda\agenda.html:11
+#, python-format
+msgid "Schedule — %(day_label)s"
+msgstr "Planning — %(day_label)s"
+
+#: .\templates\agenda\agenda.html:12
+#, python-format
+msgid "%(count)s free slot(s) automatically detected for this day."
+msgstr "%(count)s créneau(x) libre(s) détecté(s) automatiquement pour cette journée."
+
+#: .\templates\agenda\agenda.html:26 .\templates\agenda\requests.html:5
+#: .\templates\agenda\requests.html:11 .\templates\modules\layout.html:43
+msgid "Appointment requests"
+msgstr "Demandes de rendez-vous"
+
+#: .\templates\agenda\agenda.html:35 .\templates\agenda\my.html:23
+msgid "Time"
+msgstr "Heure"
+
+#: .\templates\agenda\agenda.html:37 .\templates\agenda\my.html:24
+#: .\templates\agenda\requests.html:24
+msgid "Reason"
+msgstr "Motif"
+
+#: .\templates\agenda\agenda.html:38 .\templates\agenda\my.html:25
+#: .\templates\agenda\requests.html:65
+msgid "Status"
+msgstr "Statut"
+
+#: .\templates\agenda\agenda.html:65
+#: .\templates\agenda\appointment_form.html:34
+#: .\templates\dossiers\prescription_form.html:60
+#: .\templates\dossiers\report_form.html:30
+#: .\templates\messaging\compose.html:31 .\templates\patients\form.html:54
+msgid "Cancel"
+msgstr "Annuler"
+
+#: .\templates\agenda\agenda.html:73
+msgid "No appointment on this day."
+msgstr "Aucun rendez-vous dans la journée."
+
+#: .\templates\agenda\appointment_form.html:10
+#: .\templates\agenda\requests.html:10
+msgid "Secretary workspace"
+msgstr "Espace secrétaire"
+
+#: .\templates\agenda\appointment_form.html:12
+msgid "The slot is validated against the opening hours and existing confirmed appointments."
+msgstr "Le créneau est validé par rapport aux heures d'ouverture et aux rendez-vous confirmés existants."
+
+#: .\templates\agenda\appointment_form.html:32
+#: .\templates\dossiers\prescription_form.html:59
+#: .\templates\dossiers\report_form.html:29 .\templates\patients\form.html:52
+msgid "Save"
+msgstr "Enregistrer"
+
+#: .\templates\agenda\my.html:4
+msgid "My appointments | MedConnect"
+msgstr "Mes rendez-vous | MedConnect"
+
+#: .\templates\agenda\my.html:5 .\templates\agenda\my.html:11
+#: .\templates\modules\layout.html:53
+msgid "My appointments"
+msgstr "Mes rendez-vous"
+
+#: .\templates\agenda\my.html:10
+#: .\templates\dossiers\prescription_list.html:10
+#: .\templates\dossiers\reports.html:10
+msgid "Patient workspace"
+msgstr "Espace patient"
+
+#: .\templates\agenda\my.html:12
+msgid "Track the status of your requests and confirmed appointments."
+msgstr "Suivez l'état de vos demandes et rendez-vous confirmés."
+
+#: .\templates\agenda\my.html:14
+msgid "Request a slot"
+msgstr "Demander un créneau"
+
+#: .\templates\agenda\my.html:48
+msgid "No appointment yet."
+msgstr "Aucun rendez-vous pour le moment."
+
+#: .\templates\agenda\requests.html:4
+msgid "Appointment requests | MedConnect"
+msgstr "Demandes de rendez-vous | MedConnect"
+
+#: .\templates\agenda\requests.html:12
+msgid "Only the secretary confirms or refuses a request."
+msgstr "Seule la secrétaire confirme ou refuse une demande."
+
+#: .\templates\agenda\requests.html:17
+#, python-format
+msgid "Waiting — %(count)s"
+msgstr "En attente — %(count)s"
+
+#: .\templates\agenda\requests.html:22
+msgid "Requested for"
+msgstr "Demandé pour"
+
+#: .\templates\agenda\requests.html:25
+msgid "Sent on"
+msgstr "Envoyée le"
+
+#: .\templates\agenda\requests.html:39
+msgid "Confirm"
+msgstr "Confirmer"
+
+#: .\templates\agenda\requests.html:43
+msgid "Refuse"
+msgstr "Refuser"
+
+#: .\templates\agenda\requests.html:49
+msgid "No pending request."
+msgstr "Aucune demande en attente."
+
+#: .\templates\agenda\requests.html:58
+msgid "Recent decisions"
+msgstr "Décisions récentes"
+
+#: .\templates\agenda\requests.html:63
+msgid "Slot"
+msgstr "Créneau"
+
+#: .\templates\agenda\requests.html:66
+msgid "Processed by"
+msgstr "Traitée par"
+
+#: .\templates\agenda\requests.html:87
+msgid "No decision yet."
+msgstr "Aucune décision pour le moment."
+
+#: .\templates\agenda\slots.html:4
+msgid "Available slots | MedConnect"
+msgstr "Créneaux disponibles | MedConnect"
+
+#: .\templates\agenda\slots.html:5 .\templates\modules\layout.html:49
+msgid "Request an appointment"
+msgstr "Demander un rendez-vous"
+
+#: .\templates\agenda\slots.html:10
+msgid "Innovation 1 — automatic detection"
+msgstr "Innovation 1 — détection automatique"
+
+#: .\templates\agenda\slots.html:11
+msgid "Available slots"
+msgstr "Créneaux disponibles"
+
+#: .\templates\agenda\slots.html:12
+msgid "Select a free slot: your request stays « En attente » until the secretary confirms it."
+msgstr "Choisissez un créneau libre : votre demande reste « En attente » jusqu'à la confirmation de la secrétaire."
+
+#: .\templates\agenda\slots.html:24
+msgid "Show"
+msgstr "Afficher"
+
+#: .\templates\agenda\slots.html:34
+msgid "Reason for the visit (optional)"
+msgstr "Motif de la visite (facultatif)"
+
+#: .\templates\agenda\slots.html:35
+msgid "e.g. annual check-up"
+msgstr "ex. bilan annuel"
+
+#: .\templates\agenda\slots.html:42
+msgid "Request"
+msgstr "Demander"
+
+#: .\templates\agenda\slots.html:50
+msgid "Practice closed"
+msgstr "Cabinet fermé"
+
+#: .\templates\agenda\slots.html:51
+msgid "The practice is open Monday to Friday, 09:00 → 17:00."
+msgstr "Le cabinet est ouvert du lundi au vendredi, 9h00 → 17h00."
+
+#: .\templates\agenda\slots.html:56
+msgid "No slot available"
+msgstr "Aucun créneau disponible"
+
+#: .\templates\agenda\slots.html:57
+msgid "All the slots of this day are already confirmed. Please check another day."
+msgstr "Tous les créneaux de la journée sont déjà confirmés. Veuillez vérifier un autre jour."
+
+#: .\templates\chatbot\chat.html:4
+msgid "Assistant | MedConnect"
+msgstr "Assistant | MedConnect"
+
+#: .\templates\chatbot\chat.html:5 .\templates\modules\layout.html:86
+msgid "Assistant"
+msgstr "Assistant"
+
+#: .\templates\chatbot\chat.html:10
+msgid "Innovation 2 — RAG"
+msgstr "Innovation 2 — RAG"
+
+#: .\templates\chatbot\chat.html:11
+msgid "Cabinet assistant"
+msgstr "Assistant du cabinet"
+
+#: .\templates\chatbot\chat.html:12
+msgid "Answers are built from the cabinet documentary base; the sources used are displayed."
+msgstr "Les réponses sont construites à partir de la base documentaire du cabinet ; les sources utilisées sont affichées."
+
+#: .\templates\chatbot\chat.html:17
+msgid "Clear"
+msgstr "Effacer"
+
+#: .\templates\chatbot\chat.html:28
+msgid "You"
+msgstr "Vous"
+
+#: .\templates\chatbot\chat.html:32
+msgid "MedConnect assistant"
+msgstr "Assistant MedConnect"
+
+#: .\templates\chatbot\chat.html:37
+msgid "Sources"
+msgstr "Sources"
+
+#: .\templates\chatbot\chat.html:44
+msgid "Ask the assistant"
+msgstr "Interrogez l'assistant"
+
+#: .\templates\chatbot\chat.html:45
+msgid "Example questions are on the right — or type your own below."
+msgstr "Des questions d'exemple sont à droite — ou saisissez la vôtre ci-dessous."
+
+#: .\templates\chatbot\chat.html:54
+msgid "Your question…"
+msgstr "Votre question…"
+
+#: .\templates\chatbot\chat.html:56
+msgid "Ask"
+msgstr "Envoyer"
+
+#: .\templates\chatbot\chat.html:64
+msgid "Example questions"
+msgstr "Questions d'exemple"
+
+#: .\templates\chatbot\chat.html:78
+msgid "The assistant never gives a diagnosis or a prescription and does not replace a health professional."
+msgstr "L'assistant ne donne jamais de diagnostic ni d'ordonnance et ne remplace pas un professionnel de santé."
+
+#: .\templates\dossiers\history.html:4
+#, python-format
+msgid "%(name)s — history | MedConnect"
+msgstr "%(name)s — historique | MedConnect"
+
+#: .\templates\dossiers\history.html:5
+msgid "Consultation history"
+msgstr "Historique des consultations"
+
+#: .\templates\dossiers\history.html:10
+#, python-format
+msgid "Medical history — %(name)s"
+msgstr "Historique médical — %(name)s"
+
+#: .\templates\dossiers\history.html:12
+msgid "Chronological history, readable by the doctor only."
+msgstr "Historique chronologique, lisible par le médecin uniquement."
+
+#: .\templates\dossiers\history.html:15
+msgid "File"
+msgstr "Fiche"
+
+#: .\templates\dossiers\history.html:16 .\templates\dossiers\reports.html:21
+msgid "New report"
+msgstr "Nouveau compte rendu"
+
+#: .\templates\dossiers\history.html:17
+msgid "Prescription"
+msgstr "Ordonnance"
+
+#: .\templates\dossiers\history.html:22
+msgid "Consultation reports"
+msgstr "Comptes rendus de consultation"
+
+#: .\templates\dossiers\history.html:30
+msgid "Delete this report?"
+msgstr "Supprimer ce compte rendu ?"
+
+#: .\templates\dossiers\history.html:32
+msgid "Delete"
+msgstr "Supprimer"
+
+#: .\templates\dossiers\history.html:36
+msgid "No consultation recorded for this patient."
+msgstr "Aucune consultation enregistrée pour ce patient."
+
+#: .\templates\dossiers\history.html:52
+msgid "No prescription for this patient."
+msgstr "Aucune ordonnance pour ce patient."
+
+#: .\templates\dossiers\prescription_form.html:10
+#: .\templates\dossiers\prescription_list.html:10
+#: .\templates\dossiers\report_form.html:10
+#: .\templates\dossiers\reports.html:10
+msgid "Doctor workspace"
+msgstr "Espace médecin"
+
+#: .\templates\dossiers\prescription_form.html:12
+msgid "Prescription of demonstration — no medical value."
+msgstr "Ordonnance de démonstration — sans valeur médicale."
+
+#: .\templates\dossiers\prescription_form.html:33
+msgid "Medication lines"
+msgstr "Lignes de médicaments"
+
+#: .\templates\dossiers\prescription_list.html:4
+msgid "Prescriptions | MedConnect"
+msgstr "Ordonnances | MedConnect"
+
+#: .\templates\dossiers\prescription_list.html:11
+#: .\templates\modules\layout.html:74
+msgid "My prescriptions"
+msgstr "Mes ordonnances"
+
+#: .\templates\dossiers\prescription_list.html:14
+msgid "Demonstration documents only — no medical value."
+msgstr "Documents de démonstration uniquement — sans valeur médicale."
+
+#: .\templates\dossiers\prescription_list.html:16
+msgid "Only your own prescriptions are shown."
+msgstr "Seules vos propres ordonnances sont affichées."
+
+#: .\templates\dossiers\prescription_list.html:35
+#, python-format
+msgid "Patient: %(patient)s · Doctor: %(doctor)s"
+msgstr "Patient : %(patient)s · Médecin : %(doctor)s"
+
+#: .\templates\dossiers\prescription_list.html:41
+msgid "No line."
+msgstr "Aucune ligne."
+
+#: .\templates\dossiers\prescription_list.html:51
+msgid "No prescription"
+msgstr "Aucune ordonnance"
+
+#: .\templates\dossiers\prescription_list.html:52
+msgid "Nothing to show here yet."
+msgstr "Rien à afficher pour le moment."
+
+#: .\templates\dossiers\prescription_list.html:58
+msgid "Demonstration documents without any medical or legal value."
+msgstr "Documents de démonstration sans aucune valeur médicale ou légale."
+
+#: .\templates\dossiers\report_form.html:12
+msgid "The report is attached to the selected patient and dated."
+msgstr "Le compte rendu est rattaché au patient sélectionné et daté."
+
+#: .\templates\dossiers\reports.html:4
+msgid "Medical records | MedConnect"
+msgstr "Dossiers médicaux | MedConnect"
+
+#: .\templates\dossiers\reports.html:5 .\templates\modules\layout.html:60
+msgid "Medical records"
+msgstr "Dossiers médicaux"
+
+#: .\templates\dossiers\reports.html:11
+msgid "Medical reports"
+msgstr "Comptes rendus médicaux"
+
+#: .\templates\dossiers\reports.html:11 .\templates\modules\layout.html:70
+msgid "My medical reports"
+msgstr "Mes comptes rendus médicaux"
+
+#: .\templates\dossiers\reports.html:14
+msgid "Comptes rendus of every consultation — hidden from the secretary."
+msgstr "Comptes rendus de chaque consultation — masqués à la secrétaire."
+
+#: .\templates\dossiers\reports.html:16
+msgid "Your own consultations, in chronological order."
+msgstr "Vos propres consultations, dans l'ordre chronologique."
+
+#: .\templates\dossiers\reports.html:51
+msgid "History"
+msgstr "Historique"
+
+#: .\templates\dossiers\reports.html:57
+msgid "No medical report yet."
+msgstr "Aucun compte rendu médical pour le moment."
+
+#: .\templates\messaging\compose.html:4
+msgid "New message | MedConnect"
+msgstr "Nouveau message | MedConnect"
+
+#: .\templates\messaging\compose.html:5 .\templates\messaging\compose.html:11
+#: .\templates\messaging\inbox.html:14
+msgid "New message"
+msgstr "Nouveau message"
+
+#: .\templates\messaging\compose.html:10 .\templates\messaging\inbox.html:10
+msgid "Internal messaging"
+msgstr "Messagerie interne"
+
+#: .\templates\messaging\compose.html:12
+msgid "Select an authorised recipient — the administrator never receives messages."
+msgstr "Sélectionnez un destinataire autorisé — l'administrateur ne reçoit jamais de messages."
+
+#: .\templates\messaging\compose.html:20
+msgid "Recipient"
+msgstr "Destinataire"
+
+#: .\templates\messaging\compose.html:30 .\templates\messaging\thread.html:40
+msgid "Send"
+msgstr "Envoyer"
+
+#: .\templates\messaging\inbox.html:4
+msgid "Messaging | MedConnect"
+msgstr "Messagerie | MedConnect"
+
+#: .\templates\messaging\inbox.html:5 .\templates\messaging\thread.html:10
+#: .\templates\modules\layout.html:81
+msgid "Messaging"
+msgstr "Messagerie"
+
+#: .\templates\messaging\inbox.html:11
+msgid "My conversations"
+msgstr "Mes conversations"
+
+#: .\templates\messaging\inbox.html:12
+msgid "Only the participants of a conversation can read it."
+msgstr "Seuls les participants d'une conversation peuvent la lire."
+
+#: .\templates\messaging\inbox.html:22
+msgid "With"
+msgstr "Avec"
+
+#: .\templates\messaging\inbox.html:23
+msgid "Last message"
+msgstr "Dernier message"
+
+#: .\templates\messaging\inbox.html:39
+msgid "You:"
+msgstr "Vous :"
+
+#: .\templates\messaging\inbox.html:41
+msgid "No message yet"
+msgstr "Aucun message pour le moment"
+
+#: .\templates\messaging\inbox.html:46 .\templates\patients\list.html:50
+msgid "Open"
+msgstr "Ouvrir"
+
+#: .\templates\messaging\inbox.html:52
+msgid "No conversation yet."
+msgstr "Aucune conversation pour le moment."
+
+#: .\templates\messaging\thread.html:4
+msgid "Conversation | MedConnect"
+msgstr "Conversation | MedConnect"
+
+#: .\templates\messaging\thread.html:5
+msgid "Conversation"
+msgstr "Conversation"
+
+#: .\templates\messaging\thread.html:14
+msgid "Chronological history — participants only."
+msgstr "Historique chronologique — participants uniquement."
+
+#: .\templates\messaging\thread.html:16
+msgid "Inbox"
+msgstr "Boîte de réception"
+
+#: .\templates\messaging\thread.html:25
+msgid "Read"
+msgstr "Lu"
+
+#: .\templates\messaging\thread.html:30
+msgid "No message yet — start the conversation below."
+msgstr "Aucun message pour le moment — lancez la conversation ci-dessous."
+
+#: .\templates\messaging\thread.html:38
+msgid "Write your message…"
+msgstr "Écrivez votre message…"
+
+#: .\templates\modules\layout.html:30
+msgid "My file"
+msgstr "Ma fiche"
+
+#: .\templates\modules\layout.html:126
+msgid "Close"
+msgstr "Fermer"
+
+#: .\templates\patients\detail.html:5 .\templates\patients\detail.html:10
+#: .\templates\patients\form.html:10
+msgid "Patient file"
+msgstr "Fiche patient"
+
+#: .\templates\patients\detail.html:13
+msgid "No email"
+msgstr "Aucun e-mail"
+
+#: .\templates\patients\detail.html:14
+msgid "No phone"
+msgstr "Aucun téléphone"
+
+#: .\templates\patients\detail.html:19
+msgid "Edit"
+msgstr "Modifier"
+
+#: .\templates\patients\detail.html:27
+msgid "Administrative"
+msgstr "Administratif"
+
+#: .\templates\patients\detail.html:38
+msgid "Restricted"
+msgstr "Restreint"
+
+#: .\templates\patients\detail.html:42
+msgid "Linked account"
+msgstr "Compte lié"
+
+#: .\templates\patients\detail.html:43
+msgid "No account yet"
+msgstr "Aucun compte encore"
+
+#: .\templates\patients\detail.html:49
+msgid "Medical"
+msgstr "Médical"
+
+#: .\templates\patients\detail.html:52
+msgid "Visible by the doctor only."
+msgstr "Visible par le médecin uniquement."
+
+#: .\templates\patients\detail.html:54
+msgid "No medical note."
+msgstr "Aucune note médicale."
+
+#: .\templates\patients\detail.html:58
+msgid "Consult history"
+msgstr "Voir l'historique"
+
+#: .\templates\patients\detail.html:64
+msgid "Restricted area"
+msgstr "Zone restreinte"
+
+#: .\templates\patients\detail.html:65
+msgid "Medical information is not part of your profile."
+msgstr "Les informations médicales ne font pas partie de votre profil."
+
+#: .\templates\patients\form.html:12
+msgid "Administrative fields are mandatory for the follow-up of the patient."
+msgstr "Les champs administratifs sont obligatoires pour le suivi du patient."
+
+#: .\templates\patients\form.html:25
+msgid "Administrative information"
+msgstr "Informations administratives"
+
+#: .\templates\patients\form.html:41
+msgid "Doctor only."
+msgstr "Réservé au médecin."
+
+#: .\templates\patients\list.html:4
+msgid "Patients | MedConnect"
+msgstr "Patients | MedConnect"
+
+#: .\templates\patients\list.html:11
+msgid "Patient files"
+msgstr "Fiches patients"
+
+#: .\templates\patients\list.html:14
+msgid "Full access: administrative and medical information."
+msgstr "Accès complet : informations administratives et médicales."
+
+#: .\templates\patients\list.html:16
+msgid "Administrative information only — medical fields are hidden."
+msgstr "Informations administratives uniquement — les champs médicaux sont masqués."
+
+#: .\templates\patients\list.html:22
+msgid "New patient"
+msgstr "Nouveau patient"
+
+#: .\templates\patients\list.html:57
+msgid "No patient file yet."
+msgstr "Aucune fiche patient pour le moment."
+

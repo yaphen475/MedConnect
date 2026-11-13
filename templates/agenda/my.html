@@ -1,16 +1,17 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}My appointments | MedConnect{% endblock %}
-{% block module_title %}My appointments{% endblock %}
+{% block title %}{% trans "My appointments | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "My appointments" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Patient workspace</span>
-        <h1>My appointments</h1>
-        <p>Track the status of your requests and confirmed appointments.</p>
+        <span class="eyebrow">{% trans "Patient workspace" %}</span>
+        <h1>{% trans "My appointments" %}</h1>
+        <p>{% trans "Track the status of your requests and confirmed appointments." %}</p>
     </div>
-    <a class="btn btn-info" href="{% url 'agenda:slots' %}"><i class="bi bi-calendar-plus"></i> Request a slot</a>
+    <a class="btn btn-info" href="{% url 'agenda:slots' %}"><i class="bi bi-calendar-plus"></i> {% trans "Request a slot" %}</a>
 </section>
 
 <div class="module-panel">
@@ -18,10 +19,10 @@
         <table class="table module-table align-middle">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Reason</th>
-                    <th>Status</th>
+                    <th>{% trans "Date" %}</th>
+                    <th>{% trans "Time" %}</th>
+                    <th>{% trans "Reason" %}</th>
+                    <th>{% trans "Status" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -32,19 +33,19 @@
                         <td>{{ appointment.motif|default:"—" }}</td>
                         <td>
                             {% if appointment.status == 'EN_ATTENTE' %}
-                                <span class="badge bg-warning text-dark">En attente</span>
+                                <span class="badge bg-warning text-dark">{{ appointment.get_status_display }}</span>
                             {% elif appointment.status == 'CONFIRME' %}
-                                <span class="badge bg-success">Confirmé</span>
+                                <span class="badge bg-success">{{ appointment.get_status_display }}</span>
                             {% elif appointment.status == 'REFUSE' %}
-                                <span class="badge bg-danger">Refusé</span>
+                                <span class="badge bg-danger">{{ appointment.get_status_display }}</span>
                             {% else %}
-                                <span class="badge bg-secondary">Annulé</span>
+                                <span class="badge bg-secondary">{{ appointment.get_status_display }}</span>
                             {% endif %}
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center py-4">No appointment yet.</td>
+                        <td colspan="4" class="text-center py-4">{% trans "No appointment yet." %}</td>
                     </tr>
                 {% endfor %}
             </tbody>

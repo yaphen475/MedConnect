@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.translation import gettext as _
 from django.views.decorators.http import require_POST
 
 from apps.accounts.models import User
@@ -49,7 +50,7 @@ def thread(request, pk):
             )
             conversation.save(update_fields=["updated_at"])
             return redirect("messaging:thread", pk=conversation.pk)
-        messages.error(request, "The message cannot be empty.")
+        messages.error(request, _("The message cannot be empty."))
 
     # Mark the messages received as read.
     Message.objects.filter(
@@ -82,7 +83,7 @@ def compose(request):
                 body=form.cleaned_data["body"],
             )
             conversation.save(update_fields=["updated_at"])
-            messages.success(request, "Message sent.")
+            messages.success(request, _("Message sent."))
             return redirect("messaging:thread", pk=conversation.pk)
     else:
         form = ComposeForm(sender=request.user)

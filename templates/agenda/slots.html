@@ -1,14 +1,15 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}Available slots | MedConnect{% endblock %}
-{% block module_title %}Request an appointment{% endblock %}
+{% block title %}{% trans "Available slots | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "Request an appointment" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Innovation 1 — automatic detection</span>
-        <h1>Available slots</h1>
-        <p>Select a free slot: your request stays « En attente » until the secretary confirms it.</p>
+        <span class="eyebrow">{% trans "Innovation 1 — automatic detection" %}</span>
+        <h1>{% trans "Available slots" %}</h1>
+        <p>{% trans "Select a free slot: your request stays « En attente » until the secretary confirms it." %}</p>
     </div>
 </section>
 
@@ -20,7 +21,7 @@
     </div>
     <form method="get" class="d-flex gap-2">
         <input class="form-control" type="date" name="date" value="{{ day|date:'Y-m-d' }}">
-        <button class="btn btn-outline-light" type="submit">Show</button>
+        <button class="btn btn-outline-light" type="submit">{% trans "Show" %}</button>
     </form>
 </div>
 
@@ -30,15 +31,15 @@
             {% csrf_token %}
             <input type="hidden" name="date" value="{{ day|date:'Y-m-d' }}">
             <div class="mb-3">
-                <label class="form-label" for="motif">Reason for the visit (optional)</label>
-                <input class="form-control" id="motif" name="motif" type="text" maxlength="255" placeholder="e.g. annual check-up">
+                <label class="form-label" for="motif">{% trans "Reason for the visit (optional)" %}</label>
+                <input class="form-control" id="motif" name="motif" type="text" maxlength="255" placeholder="{% trans 'e.g. annual check-up' %}">
             </div>
             <div class="slot-grid">
                 {% for slot in slots %}
                     <button class="slot-button" type="submit" name="start_time" value="{{ slot|date:'H:i' }}">
                         <i class="bi bi-clock"></i>
                         <strong>{{ slot|date:'H:i' }}</strong>
-                        <small class="opacity-75">Request</small>
+                        <small class="opacity-75">{% trans "Request" %}</small>
                     </button>
                 {% endfor %}
             </div>
@@ -46,14 +47,14 @@
     {% elif closed %}
         <div class="empty-state">
             <i class="bi bi-door-closed"></i>
-            <h3>Practice closed</h3>
-            <p>The practice is open Monday to Friday, 09:00 → 17:00.</p>
+            <h3>{% trans "Practice closed" %}</h3>
+            <p>{% trans "The practice is open Monday to Friday, 09:00 → 17:00." %}</p>
         </div>
     {% else %}
         <div class="empty-state">
             <i class="bi bi-calendar-x"></i>
-            <h3>No slot available</h3>
-            <p>All the slots of this day are already confirmed. Please check another day.</p>
+            <h3>{% trans "No slot available" %}</h3>
+            <p>{% trans "All the slots of this day are already confirmed. Please check another day." %}</p>
         </div>
     {% endif %}
 </div>

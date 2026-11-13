@@ -1,17 +1,18 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}Cabinet schedule | MedConnect{% endblock %}
-{% block module_title %}Cabinet schedule{% endblock %}
+{% block title %}{% trans "Cabinet schedule | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "Cabinet schedule" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Agenda</span>
-        <h1>Schedule — {{ day|date:'l d F Y' }}</h1>
-        <p>{{ available_count }} free slot(s) automatically detected for this day.</p>
+        <span class="eyebrow">{% trans "Agenda" %}</span>
+        <h1>{% blocktrans with day_label=day|date:'l d F Y' %}Schedule — {{ day_label }}{% endblocktrans %}</h1>
+        <p>{% blocktrans with count=available_count %}{{ count }} free slot(s) automatically detected for this day.{% endblocktrans %}</p>
     </div>
     {% if is_secretary %}
-        <a class="btn btn-info" href="{% url 'agenda:create' %}?date={{ day|date:'Y-m-d' }}"><i class="bi bi-calendar-plus"></i> New appointment</a>
+        <a class="btn btn-info" href="{% url 'agenda:create' %}?date={{ day|date:'Y-m-d' }}"><i class="bi bi-calendar-plus"></i> {% trans "New appointment" %}</a>
     {% endif %}
 </section>
 
@@ -22,7 +23,7 @@
         <a class="btn btn-sm btn-outline-light" href="?date={{ next_day|date:'Y-m-d' }}">{{ next_day|date:'d/m/Y' }} <i class="bi bi-chevron-right"></i></a>
     </div>
     {% if is_secretary %}
-        <a class="btn btn-sm btn-outline-light" href="{% url 'agenda:requests' %}"><i class="bi bi-inbox"></i> Appointment requests</a>
+        <a class="btn btn-sm btn-outline-light" href="{% url 'agenda:requests' %}"><i class="bi bi-inbox"></i> {% trans "Appointment requests" %}</a>
     {% endif %}
 </div>
 
@@ -31,10 +32,10 @@
         <table class="table module-table align-middle">
             <thead>
                 <tr>
-                    <th>Time</th>
-                    <th>Patient</th>
-                    <th>Reason</th>
-                    <th>Status</th>
+                    <th>{% trans "Time" %}</th>
+                    <th>{% trans "Patient" %}</th>
+                    <th>{% trans "Reason" %}</th>
+                    <th>{% trans "Status" %}</th>
                     {% if is_secretary %}<th></th>{% endif %}
                 </tr>
             </thead>
@@ -46,13 +47,13 @@
                         <td>{{ appointment.motif|default:"—" }}</td>
                         <td>
                             {% if appointment.status == 'EN_ATTENTE' %}
-                                <span class="badge bg-warning text-dark">En attente</span>
+                                <span class="badge bg-warning text-dark">{{ appointment.get_status_display }}</span>
                             {% elif appointment.status == 'CONFIRME' %}
-                                <span class="badge bg-success">Confirmé</span>
+                                <span class="badge bg-success">{{ appointment.get_status_display }}</span>
                             {% elif appointment.status == 'ANNULE' %}
-                                <span class="badge bg-secondary">Annulé</span>
+                                <span class="badge bg-secondary">{{ appointment.get_status_display }}</span>
                             {% else %}
-                                <span class="badge bg-danger">Refusé</span>
+                                <span class="badge bg-danger">{{ appointment.get_status_display }}</span>
                             {% endif %}
                         </td>
                         {% if is_secretary %}
@@ -61,7 +62,7 @@
                                 {% if appointment.status == 'CONFIRME' %}
                                     <form method="post" action="{% url 'agenda:cancel' appointment.pk %}" class="d-inline">
                                         {% csrf_token %}
-                                        <button class="btn btn-sm btn-outline-danger" type="submit" title="Cancel"><i class="bi bi-x-lg"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger" type="submit" title="{% trans 'Cancel' %}"><i class="bi bi-x-lg"></i></button>
                                     </form>
                                 {% endif %}
                             </td>
@@ -69,7 +70,7 @@
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-4">No appointment on this day.</td>
+                        <td colspan="5" class="text-center py-4">{% trans "No appointment on this day." %}</td>
                     </tr>
                 {% endfor %}
             </tbody>

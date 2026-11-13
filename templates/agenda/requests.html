@@ -1,27 +1,28 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
-{% block title %}Appointment requests | MedConnect{% endblock %}
-{% block module_title %}Appointment requests{% endblock %}
+{% block title %}{% trans "Appointment requests | MedConnect" %}{% endblock %}
+{% block module_title %}{% trans "Appointment requests" %}{% endblock %}
 
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Secretary workspace</span>
-        <h1>Appointment requests</h1>
-        <p>Only the secretary confirms or refuses a request.</p>
+        <span class="eyebrow">{% trans "Secretary workspace" %}</span>
+        <h1>{% trans "Appointment requests" %}</h1>
+        <p>{% trans "Only the secretary confirms or refuses a request." %}</p>
     </div>
 </section>
 
 <div class="module-panel mb-4">
-    <h2 class="h5 mb-3"><i class="bi bi-inbox me-2"></i>Waiting — {{ pending|length }}</h2>
+    <h2 class="h5 mb-3"><i class="bi bi-inbox me-2"></i>{% blocktrans with count=pending|length %}Waiting — {{ count }}{% endblocktrans %}</h2>
     <div class="table-responsive">
         <table class="table module-table align-middle">
             <thead>
                 <tr>
-                    <th>Requested for</th>
-                    <th>Patient</th>
-                    <th>Reason</th>
-                    <th>Sent on</th>
+                    <th>{% trans "Requested for" %}</th>
+                    <th>{% trans "Patient" %}</th>
+                    <th>{% trans "Reason" %}</th>
+                    <th>{% trans "Sent on" %}</th>
                     <th></th>
                 </tr>
             </thead>
@@ -35,17 +36,17 @@
                         <td class="text-end text-nowrap">
                             <form method="post" action="{% url 'agenda:confirm' appointment.pk %}" class="d-inline">
                                 {% csrf_token %}
-                                <button class="btn btn-sm btn-success" type="submit"><i class="bi bi-check-lg"></i> Confirm</button>
+                                <button class="btn btn-sm btn-success" type="submit"><i class="bi bi-check-lg"></i> {% trans "Confirm" %}</button>
                             </form>
                             <form method="post" action="{% url 'agenda:refuse' appointment.pk %}" class="d-inline">
                                 {% csrf_token %}
-                                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-x-lg"></i> Refuse</button>
+                                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-x-lg"></i> {% trans "Refuse" %}</button>
                             </form>
                         </td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-4">No pending request.</td>
+                        <td colspan="5" class="text-center py-4">{% trans "No pending request." %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -54,15 +55,15 @@
 </div>
 
 <div class="module-panel">
-    <h2 class="h5 mb-3"><i class="bi bi-clock-history me-2"></i>Recent decisions</h2>
+    <h2 class="h5 mb-3"><i class="bi bi-clock-history me-2"></i>{% trans "Recent decisions" %}</h2>
     <div class="table-responsive">
         <table class="table module-table align-middle">
             <thead>
                 <tr>
-                    <th>Slot</th>
-                    <th>Patient</th>
-                    <th>Status</th>
-                    <th>Processed by</th>
+                    <th>{% trans "Slot" %}</th>
+                    <th>{% trans "Patient" %}</th>
+                    <th>{% trans "Status" %}</th>
+                    <th>{% trans "Processed by" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -72,18 +73,18 @@
                         <td>{{ appointment.patient }}</td>
                         <td>
                             {% if appointment.status == 'CONFIRME' %}
-                                <span class="badge bg-success">Confirmé</span>
+                                <span class="badge bg-success">{{ appointment.get_status_display }}</span>
                             {% elif appointment.status == 'REFUSE' %}
-                                <span class="badge bg-danger">Refusé</span>
+                                <span class="badge bg-danger">{{ appointment.get_status_display }}</span>
                             {% else %}
-                                <span class="badge bg-secondary">Annulé</span>
+                                <span class="badge bg-secondary">{{ appointment.get_status_display }}</span>
                             {% endif %}
                         </td>
                         <td>{{ appointment.processed_by.username|default:"—" }}</td>
                     </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="4" class="text-center py-4">No decision yet.</td>
+                        <td colspan="4" class="text-center py-4">{% trans "No decision yet." %}</td>
                     </tr>
                 {% endfor %}
             </tbody>

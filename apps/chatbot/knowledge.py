@@ -3,12 +3,19 @@
 A small, explicit knowledge base: the retrieval module (see ``retrieval.py``)
 picks the documents that best match the question — a lightweight
 Retrieval-Augmented Generation approach, fully offline and deterministic.
+
+Titles and contents are lazy-translated: the active request language decides
+whether the French source or the English catalogue is served. Tags stay
+language-neutral lists of keywords (French + English) because they feed the
+retrieval scoring, not the display.
 """
+
+from django.utils.translation import gettext_lazy as _
 
 DOCS = [
     {
         "id": "horaires",
-        "title": "Horaires du cabinet",
+        "title": _("Horaires du cabinet"),
         "tags": [
             "horaire",
             "horaires",
@@ -19,8 +26,14 @@ DOCS = [
             "quand",
             "plage",
             "creneau",
+            "hours",
+            "opening",
+            "open",
+            "closed",
+            "closure",
+            "when",
         ],
-        "content": (
+        "content": _(
             "Le cabinet est ouvert du lundi au vendredi, de 9h00 a 17h00. "
             "Les rendez-vous sont proposés par créneaux de 30 minutes. "
             "Le cabinet est fermé le samedi et le dimanche."
@@ -28,7 +41,7 @@ DOCS = [
     },
     {
         "id": "demande-rdv",
-        "title": "Demander un rendez-vous",
+        "title": _("Demander un rendez-vous"),
         "tags": [
             "rendez-vous",
             "rdv",
@@ -40,8 +53,15 @@ DOCS = [
             "disponibilite",
             "disponible",
             "prendre",
+            "appointment",
+            "request",
+            "booking",
+            "book",
+            "slot",
+            "available",
+            "availability",
         ],
-        "content": (
+        "content": _(
             "Connectez-vous à votre espace patient puis ouvrez "
             "« Request an appointment ». Les créneaux libres sont détectés "
             "automatiquement : choisissez un créneau et envoyez votre demande. "
@@ -51,7 +71,7 @@ DOCS = [
     },
     {
         "id": "suivi-rdv",
-        "title": "Suivre mes demandes et rendez-vous",
+        "title": _("Suivre mes demandes et rendez-vous"),
         "tags": [
             "suivi",
             "etat",
@@ -61,8 +81,15 @@ DOCS = [
             "attente",
             "mes-rendez-vous",
             "annule",
+            "status",
+            "track",
+            "follow",
+            "pending",
+            "confirmed",
+            "refused",
+            "cancelled",
         ],
-        "content": (
+        "content": _(
             "Ouvrez « My appointments » : chaque demande affiche son statut "
             "(En attente, Confirmé, Refusé ou Annulé). Une confirmation ou un "
             "refus apparaît automatiquement dans votre espace personnel."
@@ -70,7 +97,7 @@ DOCS = [
     },
     {
         "id": "ordonnances",
-        "title": "Retrouver mes ordonnances",
+        "title": _("Retrouver mes ordonnances"),
         "tags": [
             "ordonnance",
             "ordonnances",
@@ -78,8 +105,11 @@ DOCS = [
             "prescriptions",
             "medicament",
             "traits",
+            "find",
+            "retrieve",
+            "medication",
         ],
-        "content": (
+        "content": _(
             "Depuis votre espace patient, ouvrez « My prescriptions » : vous "
             "voyez uniquement vos propres ordonnances, datées et signées par "
             "votre médecin. Les documents présentés sont des démonstrations "
@@ -89,7 +119,7 @@ DOCS = [
     },
     {
         "id": "comptes-rendus",
-        "title": "Comptes rendus de consultation",
+        "title": _("Comptes rendus de consultation"),
         "tags": [
             "compte-rendu",
             "comptes-rendus",
@@ -97,8 +127,12 @@ DOCS = [
             "historique",
             "medical",
             "dossier",
+            "report",
+            "reports",
+            "records",
+            "history",
         ],
-        "content": (
+        "content": _(
             "Le médecin rédige un compte rendu après chaque consultation : il "
             "est enregistré dans l'historique du patient, présenté de manière "
             "chronologique. Seul le médecin y accède : la secrétaire et "
@@ -108,7 +142,7 @@ DOCS = [
     },
     {
         "id": "contacter-secretaire",
-        "title": "Contacter la secrétaire",
+        "title": _("Contacter la secrétaire"),
         "tags": [
             "contacter",
             "contact",
@@ -117,8 +151,12 @@ DOCS = [
             "message",
             "ecrire",
             "joindre",
+            "messaging",
+            "write",
+            "reach",
+            "secretary",
         ],
-        "content": (
+        "content": _(
             "Utilisez la messagerie interne : ouvrez « New message », "
             "sélectionnez la secrétaire et envoyez votre message. La "
             "secrétaire reçoit votre message et vous répond dans le même fil. "
@@ -127,7 +165,7 @@ DOCS = [
     },
     {
         "id": "confidentialite",
-        "title": "Confidentialité et rôles",
+        "title": _("Confidentialité et rôles"),
         "tags": [
             "confidentialite",
             "donnees",
@@ -138,8 +176,13 @@ DOCS = [
             "role",
             "roles",
             "administrateur",
+            "privacy",
+            "data",
+            "security",
+            "access",
+            "password",
         ],
-        "content": (
+        "content": _(
             "Chaque profil accède uniquement à ses droits : le médecin aux "
             "données médicales, la secrétaire aux données administratives, le "
             "patient à ses propres informations. L'administrateur technique "
@@ -149,7 +192,7 @@ DOCS = [
     },
     {
         "id": "confirmation",
-        "title": "Confirmation et annulation",
+        "title": _("Confirmation et annulation"),
         "tags": [
             "confirmer",
             "confirmation",
@@ -158,8 +201,12 @@ DOCS = [
             "refuser",
             "refus",
             "validation",
+            "confirm",
+            "cancel",
+            "cancellation",
+            "refusal",
         ],
-        "content": (
+        "content": _(
             "Seule la secrétaire confirme ou refuse une demande de rendez-vous. "
             "Un rendez-vous confirmé rend son créneau indisponible et "
             "un créneau ne peut accueillir qu'un seul rendez-vous confirmé. "
@@ -168,20 +215,20 @@ DOCS = [
     },
 ]
 
-REFUSAL = (
+REFUSAL = _(
     "Je ne peux pas répondre à cette question : l'assistant ne fournit "
     "jamais de diagnostic, de conseil médical ni de prescription. "
     "Pour un avis médical, contactez votre médecin ou la "
     "secrétaire du cabinet."
 )
 
-FALLBACK = (
+FALLBACK = _(
     "Je n'ai pas trouvé de document correspondant à votre question. Essayez "
     "par exemple : « Quels sont les horaires d'ouverture ? », « Comment "
     "demander un rendez-vous ? », « Comment retrouver mes ordonnances ? » "
     "ou « Comment contacter la secrétaire ? »."
 )
 
-INTRO = (
+INTRO = _(
     "D'après la base documentaire du cabinet, voici l'information utile :"
 )

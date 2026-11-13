@@ -1,4 +1,5 @@
 {% extends "modules/layout.html" %}
+{% load i18n %}
 
 {% block title %}{{ title }} | MedConnect{% endblock %}
 {% block module_title %}{{ title }}{% endblock %}
@@ -6,9 +7,9 @@
 {% block module_content %}
 <section class="dashboard-heading">
     <div>
-        <span class="eyebrow">Patient file</span>
+        <span class="eyebrow">{% trans "Patient file" %}</span>
         <h1>{{ title }}</h1>
-        <p>Administrative fields are mandatory for the follow-up of the patient.</p>
+        <p>{% trans "Administrative fields are mandatory for the follow-up of the patient." %}</p>
     </div>
 </section>
 
@@ -21,7 +22,7 @@
     {% endif %}
     <div class="col-12 col-lg-8">
         <div class="module-panel">
-            <h2 class="h5 mb-3">Administrative information</h2>
+            <h2 class="h5 mb-3">{% trans "Administrative information" %}</h2>
             <div class="row g-3">
                 {% for field in form %}
                     <div class="{% if field.name == 'administrative_notes' or field.name == 'address' or field.name == 'user' %}col-12{% else %}col-12 col-md-6{% endif %}">
@@ -36,8 +37,8 @@
     {% if show_medical and medical_form %}
         <div class="col-12 col-lg-4">
             <div class="module-panel h-100">
-                <h2 class="h5 mb-3">Medical notes</h2>
-                <p class="text-secondary small">Doctor only.</p>
+                <h2 class="h5 mb-3">{% trans "Medical notes" %}</h2>
+                <p class="text-secondary small">{% trans "Doctor only." %}</p>
                 {% for field in medical_form %}
                     <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
                     {{ field }}
@@ -48,9 +49,9 @@
     {% endif %}
     <div class="col-12 d-flex gap-2">
         <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit">
-            <i class="bi bi-check-lg"></i> Save
+            <i class="bi bi-check-lg"></i> {% trans "Save" %}
         </button>
-        <a class="btn btn-outline-light" href="{% if patient %}{% url 'patients:detail' patient.pk %}{% else %}{% url 'patients:list' %}{% endif %}">Cancel</a>
+        <a class="btn btn-outline-light" href="{% if patient %}{% url 'patients:detail' patient.pk %}{% else %}{% url 'patients:list' %}{% endif %}">{% trans "Cancel" %}</a>
     </div>
 </form>
 {% endblock %}
