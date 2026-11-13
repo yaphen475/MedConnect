@@ -1,0 +1,34 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}{{ title }} | MedConnect{% endblock %}
+{% block module_title %}{{ title }}{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Secretary workspace</span>
+        <h1>{{ title }}</h1>
+        <p>The slot is validated against the opening hours and existing confirmed appointments (RG-04).</p>
+    </div>
+</section>
+
+<form method="post" class="module-panel" style="max-width: 40rem;">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <div class="row g-3">
+        {% for field in form %}
+            <div class="col-12">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex gap-2 mt-4">
+        <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit"><i class="bi bi-check-lg"></i> Save</button>
+        <a class="btn btn-outline-light" href="{% url 'agenda:view' %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

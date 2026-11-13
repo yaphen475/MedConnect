@@ -1,0 +1,60 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}{{ patient }} | MedConnect{% endblock %}
+{% block module_title %}Patient file{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Patient file</span>
+        <h1>{{ patient.full_name }}</h1>
+        <p>{{ patient.email|default:"No email" }} · {{ patient.phone|default:"No phone" }}</p>
+    </div>
+    {% if can_edit %}
+        <a class="btn btn-outline-light" href="{% url 'patients:edit' patient.pk %}">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+    {% endif %}
+</section>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-6">
+        <div class="module-panel h-100">
+            <h2 class="h5 mb-3"><i class="bi bi-person-vcard me-2"></i>Administrative</h2>
+            <dl class="detail-list mb-0">
+                <dt>First name</dt><dd>{{ patient.first_name }}</dd>
+                <dt>Last name</dt><dd>{{ patient.last_name }}</dd>
+                <dt>Birth date</dt><dd>{{ patient.birth_date|default:"—" }}</dd>
+                <dt>Address</dt><dd>{{ patient.address|default:"—" }}</dd>
+                <dt>Social security number</dt><dd>{{ patient.social_security_number|default:"—" }}</dd>
+                <dt>Administrative notes</dt><dd>{{ patient.administrative_notes|default:"—" }}</dd>
+                <dt>Linked account</dt>
+                <dd>{{ patient.user.username|default:"No account yet" }}</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="col-12 col-lg-6">
+        <div class="module-panel h-100">
+            <h2 class="h5 mb-3"><i class="bi bi-heart-pulse me-2"></i>Medical</h2>
+            {% if show_medical %}
+                <p class="mb-2 text-secondary small">
+                    Visible by the doctor only (RG-07).
+                </p>
+                <p class="mb-0">{{ patient.medical_notes|default:"No medical note." }}</p>
+                {% if patient.user_id %}
+                    <hr class="border-light border-opacity-10">
+                    <a class="btn btn-sm btn-outline-light" href="{% url 'dossiers:patient_history' patient.pk %}">
+                        <i class="bi bi-clock-history"></i> Consult history
+                    </a>
+                {% endif %}
+            {% else %}
+                <div class="empty-state text-start">
+                    <i class="bi bi-lock"></i>
+                    <h3 class="h6">Restricted area</h3>
+                    <p class="mb-0">Medical information is not part of your profile.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

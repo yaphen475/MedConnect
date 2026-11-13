@@ -1,0 +1,54 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}My appointments | MedConnect{% endblock %}
+{% block module_title %}My appointments{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Patient workspace</span>
+        <h1>My appointments</h1>
+        <p>Track the status of your requests and confirmed appointments (US-10).</p>
+    </div>
+    <a class="btn btn-info" href="{% url 'agenda:slots' %}"><i class="bi bi-calendar-plus"></i> Request a slot</a>
+</section>
+
+<div class="module-panel">
+    <div class="table-responsive">
+        <table class="table module-table align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ appointment.date|date:'d/m/Y' }}</td>
+                        <td>{{ appointment.start_time|date:'H:i' }}</td>
+                        <td>{{ appointment.motif|default:"—" }}</td>
+                        <td>
+                            {% if appointment.status == 'EN_ATTENTE' %}
+                                <span class="badge bg-warning text-dark">En attente</span>
+                            {% elif appointment.status == 'CONFIRME' %}
+                                <span class="badge bg-success">Confirmé</span>
+                            {% elif appointment.status == 'REFUSE' %}
+                                <span class="badge bg-danger">Refusé</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Annulé</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4">No appointment yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

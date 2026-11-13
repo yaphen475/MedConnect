@@ -1,0 +1,60 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}Available slots | MedConnect{% endblock %}
+{% block module_title %}Request an appointment{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Innovation 1 — automatic detection</span>
+        <h1>Available slots</h1>
+        <p>Select a free slot: your request stays « En attente » until the secretary confirms it.</p>
+    </div>
+</section>
+
+<div class="module-toolbar">
+    <div class="d-flex align-items-center gap-2">
+        <a class="btn btn-sm btn-outline-light" href="?date={{ previous_day|date:'Y-m-d' }}"><i class="bi bi-chevron-left"></i> {{ previous_day|date:'d/m/Y' }}</a>
+        <strong>{{ day|date:'l d F Y' }}</strong>
+        <a class="btn btn-sm btn-outline-light" href="?date={{ next_day|date:'Y-m-d' }}">{{ next_day|date:'d/m/Y' }} <i class="bi bi-chevron-right"></i></a>
+    </div>
+    <form method="get" class="d-flex gap-2">
+        <input class="form-control" type="date" name="date" value="{{ day|date:'Y-m-d' }}">
+        <button class="btn btn-outline-light" type="submit">Show</button>
+    </form>
+</div>
+
+<div class="module-panel">
+    {% if slots %}
+        <form method="post" action="{% url 'agenda:slot_request' %}">
+            {% csrf_token %}
+            <input type="hidden" name="date" value="{{ day|date:'Y-m-d' }}">
+            <div class="mb-3">
+                <label class="form-label" for="motif">Reason for the visit (optional)</label>
+                <input class="form-control" id="motif" name="motif" type="text" maxlength="255" placeholder="e.g. annual check-up">
+            </div>
+            <div class="slot-grid">
+                {% for slot in slots %}
+                    <button class="slot-button" type="submit" name="start_time" value="{{ slot|date:'H:i' }}">
+                        <i class="bi bi-clock"></i>
+                        <strong>{{ slot|date:'H:i' }}</strong>
+                        <small class="opacity-75">Request</small>
+                    </button>
+                {% endfor %}
+            </div>
+        </form>
+    {% elif closed %}
+        <div class="empty-state">
+            <i class="bi bi-door-closed"></i>
+            <h3>Practice closed</h3>
+            <p>The practice is open Monday to Friday, 09:00 → 17:00.</p>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-calendar-x"></i>
+            <h3>No slot available</h3>
+            <p>All the slots of this day are already confirmed. Please check another day.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

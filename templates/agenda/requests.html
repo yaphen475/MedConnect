@@ -1,0 +1,93 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}Appointment requests | MedConnect{% endblock %}
+{% block module_title %}Appointment requests{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Secretary workspace</span>
+        <h1>Appointment requests</h1>
+        <p>Only the secretary confirms or refuses a request (RG-01).</p>
+    </div>
+</section>
+
+<div class="module-panel mb-4">
+    <h2 class="h5 mb-3"><i class="bi bi-inbox me-2"></i>Waiting — {{ pending|length }}</h2>
+    <div class="table-responsive">
+        <table class="table module-table align-middle">
+            <thead>
+                <tr>
+                    <th>Requested for</th>
+                    <th>Patient</th>
+                    <th>Reason</th>
+                    <th>Sent on</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in pending %}
+                    <tr>
+                        <td class="fw-semibold">{{ appointment.date|date:'d/m/Y' }} — {{ appointment.start_time|date:'H:i' }}</td>
+                        <td>{{ appointment.patient }}</td>
+                        <td>{{ appointment.motif|default:"—" }}</td>
+                        <td>{{ appointment.created_at|date:'d/m/Y H:i' }}</td>
+                        <td class="text-end text-nowrap">
+                            <form method="post" action="{% url 'agenda:confirm' appointment.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-success" type="submit"><i class="bi bi-check-lg"></i> Confirm</button>
+                            </form>
+                            <form method="post" action="{% url 'agenda:refuse' appointment.pk %}" class="d-inline">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-x-lg"></i> Refuse</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">No pending request.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="module-panel">
+    <h2 class="h5 mb-3"><i class="bi bi-clock-history me-2"></i>Recent decisions</h2>
+    <div class="table-responsive">
+        <table class="table module-table align-middle">
+            <thead>
+                <tr>
+                    <th>Slot</th>
+                    <th>Patient</th>
+                    <th>Status</th>
+                    <th>Processed by</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in processed %}
+                    <tr>
+                        <td>{{ appointment.date|date:'d/m/Y' }} — {{ appointment.start_time|date:'H:i' }}</td>
+                        <td>{{ appointment.patient }}</td>
+                        <td>
+                            {% if appointment.status == 'CONFIRME' %}
+                                <span class="badge bg-success">Confirmé</span>
+                            {% elif appointment.status == 'REFUSE' %}
+                                <span class="badge bg-danger">Refusé</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Annulé</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ appointment.processed_by.username|default:"—" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4">No decision yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

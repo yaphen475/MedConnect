@@ -1,0 +1,58 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}Messaging | MedConnect{% endblock %}
+{% block module_title %}Messaging{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Internal messaging</span>
+        <h1>My conversations</h1>
+        <p>Only the participants of a conversation can read it (US-17 / RG-11).</p>
+    </div>
+    <a class="btn btn-info" href="{% url 'messaging:compose' %}"><i class="bi bi-pencil-square"></i> New message</a>
+</section>
+
+<div class="module-panel">
+    <div class="table-responsive">
+        <table class="table module-table align-middle">
+            <thead>
+                <tr>
+                    <th>With</th>
+                    <th>Last message</th>
+                    <th>Date</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in conversations %}
+                    {% with conversation=item.conversation last=item.last %}
+                        <tr>
+                            <td class="fw-semibold">
+                                {% for person in item.others %}
+                                    {{ person.username }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="text-truncate" style="max-width: 22rem;">
+                                {% if last %}
+                                    {% if last.sender == user %}<span class="opacity-75">You:</span> {% endif %}{{ last.body }}
+                                {% else %}
+                                    <span class="text-secondary">No message yet</span>
+                                {% endif %}
+                            </td>
+                            <td>{% if last %}{{ last.sent_at|date:'d/m H:i' }}{% else %}—{% endif %}</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-light" href="{% url 'messaging:thread' conversation.pk %}">Open</a>
+                            </td>
+                        </tr>
+                    {% endwith %}
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4">No conversation yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

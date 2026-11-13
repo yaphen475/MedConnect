@@ -1,0 +1,79 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}Cabinet schedule | MedConnect{% endblock %}
+{% block module_title %}Cabinet schedule{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Agenda</span>
+        <h1>Schedule — {{ day|date:'l d F Y' }}</h1>
+        <p>{{ available_count }} free slot(s) automatically detected for this day.</p>
+    </div>
+    {% if is_secretary %}
+        <a class="btn btn-info" href="{% url 'agenda:create' %}?date={{ day|date:'Y-m-d' }}"><i class="bi bi-calendar-plus"></i> New appointment</a>
+    {% endif %}
+</section>
+
+<div class="module-toolbar">
+    <div class="d-flex align-items-center gap-2">
+        <a class="btn btn-sm btn-outline-light" href="?date={{ previous_day|date:'Y-m-d' }}"><i class="bi bi-chevron-left"></i> {{ previous_day|date:'d/m/Y' }}</a>
+        <strong>{{ day|date:'d/m/Y' }}</strong>
+        <a class="btn btn-sm btn-outline-light" href="?date={{ next_day|date:'Y-m-d' }}">{{ next_day|date:'d/m/Y' }} <i class="bi bi-chevron-right"></i></a>
+    </div>
+    {% if is_secretary %}
+        <a class="btn btn-sm btn-outline-light" href="{% url 'agenda:requests' %}"><i class="bi bi-inbox"></i> Appointment requests</a>
+    {% endif %}
+</div>
+
+<div class="module-panel">
+    <div class="table-responsive">
+        <table class="table module-table align-middle">
+            <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Patient</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    {% if is_secretary %}<th></th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for appointment in appointments %}
+                    <tr>
+                        <td class="fw-semibold">{{ appointment.start_time|date:'H:i' }}</td>
+                        <td>{{ appointment.patient }}</td>
+                        <td>{{ appointment.motif|default:"—" }}</td>
+                        <td>
+                            {% if appointment.status == 'EN_ATTENTE' %}
+                                <span class="badge bg-warning text-dark">En attente</span>
+                            {% elif appointment.status == 'CONFIRME' %}
+                                <span class="badge bg-success">Confirmé</span>
+                            {% elif appointment.status == 'ANNULE' %}
+                                <span class="badge bg-secondary">Annulé</span>
+                            {% else %}
+                                <span class="badge bg-danger">Refusé</span>
+                            {% endif %}
+                        </td>
+                        {% if is_secretary %}
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-light" href="{% url 'agenda:edit' appointment.pk %}"><i class="bi bi-pencil"></i></a>
+                                {% if appointment.status == 'CONFIRME' %}
+                                    <form method="post" action="{% url 'agenda:cancel' appointment.pk %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-outline-danger" type="submit" title="Cancel"><i class="bi bi-x-lg"></i></button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">No appointment on this day.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

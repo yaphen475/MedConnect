@@ -1,0 +1,134 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block content %}
+<link href="{% static 'css/modules.css' %}" rel="stylesheet">
+<div class="app-shell">
+    <aside class="offcanvas-lg offcanvas-start app-sidebar" id="appSidebar" tabindex="-1" aria-labelledby="appSidebarLabel">
+        <div class="offcanvas-header border-bottom border-light border-opacity-10 d-lg-none">
+            <h2 class="offcanvas-title h5 mb-0" id="appSidebarLabel">Navigation</h2>
+            <button class="btn-close btn-close-white" type="button" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="Close navigation"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column p-0">
+            <a class="sidebar-brand" href="{% url 'accounts:dashboard' %}">
+                <span class="brand-symbol"><i class="bi bi-heart-pulse"></i></span>
+                <span>MedConnect</span>
+            </a>
+            <nav class="sidebar-navigation" aria-label="Main navigation">
+                <a class="sidebar-link{% if section == 'dashboard' %} active{% endif %}" href="{% url 'accounts:dashboard' %}">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+                {% if user.role == 'DOCTOR' or user.role == 'SECRETARY' %}
+                    <a class="sidebar-link{% if section == 'patients' %} active{% endif %}" href="{% url 'patients:list' %}">
+                        <i class="bi bi-person-vcard"></i>
+                        <span>Patients</span>
+                    </a>
+                {% elif user.role == 'PATIENT' %}
+                    <a class="sidebar-link{% if section == 'patients' %} active{% endif %}" href="{% url 'patients:mine' %}">
+                        <i class="bi bi-person-vcard"></i>
+                        <span>My file</span>
+                    </a>
+                {% endif %}
+
+                {% if user.role == 'DOCTOR' or user.role == 'SECRETARY' %}
+                    <a class="sidebar-link{% if section == 'agenda' %} active{% endif %}" href="{% url 'agenda:view' %}">
+                        <i class="bi bi-calendar-week"></i>
+                        <span>Cabinet schedule</span>
+                    </a>
+                {% endif %}
+                {% if user.role == 'SECRETARY' %}
+                    <a class="sidebar-link{% if section == 'requests' %} active{% endif %}" href="{% url 'agenda:requests' %}">
+                        <i class="bi bi-calendar-plus"></i>
+                        <span>Appointment requests</span>
+                    </a>
+                {% endif %}
+                {% if user.role == 'PATIENT' %}
+                    <a class="sidebar-link{% if section == 'slots' %} active{% endif %}" href="{% url 'agenda:slots' %}">
+                        <i class="bi bi-calendar-plus"></i>
+                        <span>Request an appointment</span>
+                    </a>
+                    <a class="sidebar-link{% if section == 'my-appointments' %} active{% endif %}" href="{% url 'agenda:my' %}">
+                        <i class="bi bi-calendar-check"></i>
+                        <span>My appointments</span>
+                    </a>
+                {% endif %}
+
+                {% if user.role == 'DOCTOR' %}
+                    <a class="sidebar-link{% if section == 'records' %} active{% endif %}" href="{% url 'dossiers:reports' %}">
+                        <i class="bi bi-file-medical"></i>
+                        <span>Medical records</span>
+                    </a>
+                    <a class="sidebar-link{% if section == 'prescriptions' %} active{% endif %}" href="{% url 'dossiers:prescriptions' %}">
+                        <i class="bi bi-capsule"></i>
+                        <span>Prescriptions</span>
+                    </a>
+                {% endif %}
+                {% if user.role == 'PATIENT' %}
+                    <a class="sidebar-link{% if section == 'records' %} active{% endif %}" href="{% url 'dossiers:reports' %}">
+                        <i class="bi bi-file-medical"></i>
+                        <span>My medical reports</span>
+                    </a>
+                    <a class="sidebar-link{% if section == 'prescriptions' %} active{% endif %}" href="{% url 'dossiers:prescriptions' %}">
+                        <i class="bi bi-capsule"></i>
+                        <span>My prescriptions</span>
+                    </a>
+                {% endif %}
+
+                {% if user.role != 'ADMIN' %}
+                    <a class="sidebar-link{% if section == 'messaging' %} active{% endif %}" href="{% url 'messaging:inbox' %}">
+                        <i class="bi bi-chat-dots"></i>
+                        <span>Messaging</span>
+                    </a>
+                {% endif %}
+                <a class="sidebar-link{% if section == 'chatbot' %} active{% endif %}" href="{% url 'chatbot:chat' %}">
+                    <i class="bi bi-robot"></i>
+                    <span>Assistant</span>
+                </a>
+            </nav>
+            <div class="sidebar-status mt-auto">
+                <span class="status-indicator"></span>
+                <span>Secure session</span>
+            </div>
+        </div>
+    </aside>
+
+    <div class="app-content">
+        <header class="top-navigation">
+            <button class="btn mobile-menu-button d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="Open navigation">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="top-navigation-title">
+                <span class="text-secondary small">{{ user.get_role_display }}</span>
+                <span class="fw-semibold">{% block module_title %}MedConnect{% endblock %}</span>
+            </div>
+            <div class="top-navigation-user ms-auto">
+                <span class="user-avatar">{{ user.username|first|upper }}</span>
+                <span class="user-details d-none d-sm-flex">
+                    <strong>{{ user.username }}</strong>
+                    <small>{{ user.get_role_display }}</small>
+                </span>
+                <form method="post" action="{% url 'accounts:logout' %}">
+                    {% csrf_token %}
+                    <button class="btn logout-button" type="submit">
+                        <i class="bi bi-box-arrow-right"></i>
+                        <span class="d-none d-md-inline">Log out</span>
+                    </button>
+                </form>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% block module_content %}{% endblock %}
+        </main>
+    </div>
+</div>
+{% endblock %}

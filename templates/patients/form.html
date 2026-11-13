@@ -1,0 +1,56 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}{{ title }} | MedConnect{% endblock %}
+{% block module_title %}{{ title }}{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Patient file</span>
+        <h1>{{ title }}</h1>
+        <p>Administrative fields are mandatory for the follow-up of the patient.</p>
+    </div>
+</section>
+
+<form method="post" class="row g-4">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+        <div class="col-12">
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        </div>
+    {% endif %}
+    <div class="col-12 col-lg-8">
+        <div class="module-panel">
+            <h2 class="h5 mb-3">Administrative information</h2>
+            <div class="row g-3">
+                {% for field in form %}
+                    <div class="{% if field.name == 'administrative_notes' or field.name == 'address' or field.name == 'user' %}col-12{% else %}col-12 col-md-6{% endif %}">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% if show_medical and medical_form %}
+        <div class="col-12 col-lg-4">
+            <div class="module-panel h-100">
+                <h2 class="h5 mb-3">Medical notes</h2>
+                <p class="text-secondary small">Doctor only (RG-07).</p>
+                {% for field in medical_form %}
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    <div class="col-12 d-flex gap-2">
+        <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit">
+            <i class="bi bi-check-lg"></i> Save
+        </button>
+        <a class="btn btn-outline-light" href="{% if patient %}{% url 'patients:detail' patient.pk %}{% else %}{% url 'patients:list' %}{% endif %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

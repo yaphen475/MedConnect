@@ -1,0 +1,63 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}Medical records | MedConnect{% endblock %}
+{% block module_title %}Medical records{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">{% if is_doctor %}Doctor{% else %}Patient{% endif %} workspace</span>
+        <h1>{% if is_doctor %}Medical reports{% else %}My medical reports{% endif %}</h1>
+        <p>
+            {% if is_doctor %}
+                Comptes rendus of every consultation — hidden from the secretary (RG-07).
+            {% else %}
+                Your own consultations, in chronological order (US-12).
+            {% endif %}
+        </p>
+    </div>
+    {% if is_doctor %}
+        <a class="btn btn-info" href="{% url 'dossiers:report_new' %}"><i class="bi bi-file-earmark-plus"></i> New report</a>
+    {% endif %}
+</section>
+
+<div class="module-panel">
+    <div class="table-responsive">
+        <table class="table module-table align-middle">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Patient</th>
+                    <th>Title</th>
+                    <th>Doctor</th>
+                    {% if is_doctor %}<th></th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                    <tr>
+                        <td class="fw-semibold">{{ report.consultation_date|date:'d/m/Y' }}</td>
+                        <td>{{ report.patient }}</td>
+                        <td>
+                            <details>
+                                <summary class="text-decoration-underline">{{ report.title }}</summary>
+                                <div class="mt-2 p-3 rounded" style="background: rgba(0,0,0,.15); white-space: pre-wrap;">{{ report.content }}</div>
+                            </details>
+                        </td>
+                        <td>{{ report.author.username|default:"—" }}</td>
+                        {% if is_doctor %}
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-outline-light" href="{% url 'dossiers:patient_history' report.patient_id %}">History</a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">No medical report yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

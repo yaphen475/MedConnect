@@ -1,0 +1,32 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}{{ title }} | MedConnect{% endblock %}
+{% block module_title %}{{ title }}{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">Doctor workspace</span>
+        <h1>{{ title }}</h1>
+        <p>The report is attached to the selected patient and dated (US-11).</p>
+    </div>
+</section>
+
+<form method="post" class="module-panel" style="max-width: 46rem;">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="row g-3">
+        {% for field in form %}
+            <div class="col-12 {% if field.name == 'title' %}col-md-7{% elif field.name == 'consultation_date' %}col-md-5{% endif %}">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}<div class="text-danger small">{{ field.errors }}</div>{% endif %}
+            </div>
+        {% endfor %}
+    </div>
+    <div class="d-flex gap-2 mt-4">
+        <button class="btn btn-info d-inline-flex align-items-center gap-2" type="submit"><i class="bi bi-check-lg"></i> Save</button>
+        <a class="btn btn-outline-light" href="{% url 'dossiers:reports' %}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

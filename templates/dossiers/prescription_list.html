@@ -1,0 +1,60 @@
+{% extends "modules/layout.html" %}
+
+{% block title %}Prescriptions | MedConnect{% endblock %}
+{% block module_title %}Prescriptions{% endblock %}
+
+{% block module_content %}
+<section class="dashboard-heading">
+    <div>
+        <span class="eyebrow">{% if is_doctor %}Doctor{% else %}Patient{% endif %} workspace</span>
+        <h1>{% if is_doctor %}Prescriptions{% else %}My prescriptions{% endif %}</h1>
+        <p>
+            {% if is_doctor %}
+                Demonstration documents only — no medical value (US-13).
+            {% else %}
+                Only your own prescriptions are shown (US-14 / RG-06).
+            {% endif %}
+        </p>
+    </div>
+    {% if is_doctor %}
+        <a class="btn btn-info" href="{% url 'dossiers:prescription_new' %}"><i class="bi bi-capsule"></i> New prescription</a>
+    {% endif %}
+</section>
+
+<div class="module-panel">
+    <div class="row g-4">
+        {% for prescription in prescriptions %}
+            <div class="col-12 col-lg-6">
+                <div class="module-panel h-100">
+                    <div class="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                        <strong>{{ prescription.title }}</strong>
+                        <span class="text-secondary small">{{ prescription.issued_date|date:'d/m/Y' }}</span>
+                    </div>
+                    <p class="text-secondary small mb-2">
+                        Patient: {{ prescription.patient }} · Doctor: {{ prescription.author.username|default:"—" }}
+                    </p>
+                    <ul class="mb-2">
+                        {% for item in prescription.items.all %}
+                            <li>{{ item.medication }}{% if item.dosage %} — {{ item.dosage }}{% endif %}{% if item.instructions %}<br><small class="text-secondary">{{ item.instructions }}</small>{% endif %}</li>
+                        {% empty %}
+                            <li class="text-secondary">No line.</li>
+                        {% endfor %}
+                    </ul>
+                    {% if prescription.notes %}<p class="small mb-0">{{ prescription.notes }}</p>{% endif %}
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="bi bi-capsule"></i>
+                    <h3>No prescription</h3>
+                    <p>Nothing to show here yet.</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <p class="text-secondary small mt-4 mb-0">
+        Demonstration documents without any medical or legal value.
+    </p>
+</div>
+{% endblock %}
