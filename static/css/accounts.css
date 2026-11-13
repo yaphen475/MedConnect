@@ -14,6 +14,55 @@ body {
     min-width: 320px;
 }
 
+.language-switcher {
+    align-items: center;
+    background: #fff;
+    border: 1px solid var(--medconnect-border);
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.85rem rgba(24, 50, 54, 0.1);
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.35rem 0.65rem;
+}
+
+.language-switcher-placement {
+    position: fixed;
+    right: 1.25rem;
+    top: 1.25rem;
+    z-index: 1100;
+}
+
+.language-switcher > i {
+    color: var(--medconnect-primary);
+    font-size: 1rem;
+}
+
+.language-switcher select {
+    background: transparent;
+    border: 0;
+    color: var(--medconnect-text);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    min-width: 7rem;
+    outline: 0;
+    padding: 0.2rem 1.35rem 0.2rem 0.1rem;
+}
+
+.language-switcher:focus-within {
+    border-color: #8db9b6;
+    box-shadow: 0 0 0 0.2rem rgba(23, 107, 115, 0.12);
+}
+
+.language-switcher-header {
+    box-shadow: none;
+    flex: 0 0 auto;
+}
+
+.language-switcher-header select {
+    min-width: 6rem;
+}
+
 .auth-page {
     min-height: 100vh;
 }
@@ -390,6 +439,20 @@ body {
 }
 
 @media (max-width: 575.98px) {
+    .language-switcher-placement {
+        right: 0.75rem;
+        top: 0.75rem;
+    }
+
+    .language-switcher-header {
+        gap: 0.25rem;
+        padding: 0.3rem 0.45rem;
+    }
+
+    .language-switcher-header select {
+        min-width: 5.5rem;
+    }
+
     .top-navigation {
         min-height: 4.5rem;
         padding: 0 1rem;

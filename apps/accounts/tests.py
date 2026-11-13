@@ -87,6 +87,34 @@ class AuthenticationTests(TestCase):
 
         self.assertNotIn("role", response.context["form"].fields)
 
+    def test_language_switcher_is_visible_on_login_and_dashboard(self):
+        login_response = self.client.get(reverse("accounts:login"))
+        self.assertContains(login_response, 'class="language-switcher"')
+        self.assertContains(login_response, 'value="en"')
+        self.assertContains(login_response, 'value="fr"')
+
+        self.client.force_login(self.user)
+        dashboard_response = self.client.get(reverse("accounts:dashboard"))
+        self.assertContains(
+            dashboard_response,
+            'class="language-switcher language-switcher-header"',
+        )
+
+    def test_language_switch_persists_and_translates_current_page(self):
+        login_url = reverse("accounts:login")
+        response = self.client.post(
+            reverse("set_language"),
+            {"language": "fr", "next": login_url},
+        )
+
+        self.assertRedirects(response, login_url)
+        self.assertEqual(
+            response.cookies["django_language"].value,
+            "fr",
+        )
+        french_response = self.client.get(login_url)
+        self.assertContains(french_response, "Se connecter")
+
     def test_home_redirects_unauthenticated_user_to_login(self):
         response = self.client.get(reverse("accounts:home"))
 

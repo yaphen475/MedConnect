@@ -1,6 +1,8 @@
 {% extends "accounts/base.html" %}
 {% load i18n %}
 
+{% block language_switcher %}{% endblock %}
+
 {% block content %}
 <div class="app-shell">
     <aside class="offcanvas-lg offcanvas-start app-sidebar" id="appSidebar" tabindex="-1" aria-labelledby="appSidebarLabel">
@@ -50,6 +52,7 @@
                 <span class="fw-semibold">{% block module_title %}{% trans "Dashboard" %}{% endblock %}</span>
             </div>
             <div class="top-navigation-user ms-auto">
+                {% include "accounts/language_switcher.html" with in_header=True %}
                 <span class="user-avatar">{{ user.username|first|upper }}</span>
                 <span class="user-details d-none d-sm-flex">
                     <strong>{{ user.username }}</strong>
