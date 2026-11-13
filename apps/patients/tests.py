@@ -171,3 +171,65 @@ class PatientPermissionTests(TestCase):
         self.client.force_login(self.patient_a)
         response = self.client.get(reverse("patients:create"))
         self.assertEqual(response.status_code, 403)
+
+    def test_secretary_never_sees_nor_writes_the_ssn(self):
+        """RG-08: data not needed at the reception desk are masked."""
+        SSN = "1 80 04 75 111 111 42"
+        self.file_a.social_security_number = SSN
+        self.file_a.save(update_fields=["social_security_number"])
+
+        self.client.force_login(self.secretary)
+
+        # Masked on the detail page.
+        response = self.client.get(
+            reverse("patients:detail", args=[self.file_a.pk])
+        )
+        self.assertNotContains(response, SSN)
+        self.assertContains(response, "Restricted — RG-08")
+
+        # Absent from the edit form.
+        response = self.client.get(
+            reverse("patients:edit", args=[self.file_a.pk])
+        )
+        self.assertNotContains(response, SSN)
+        self.assertNotContains(response, "social_security_number")
+
+        # A posted value is ignored (field removed for the secretary).
+        self.client.post(
+            reverse("patients:edit", args=[self.file_a.pk]),
+            {
+                "first_name": "Alice",
+                "last_name": "Armand",
+                "birth_date": "",
+                "phone": "0600000001",
+                "email": "",
+                "address": "",
+                "social_security_number": "FORGED-BY-SECRETARY",
+                "administrative_notes": "",
+                "user": self.patient_a.pk,
+            },
+        )
+        self.file_a.refresh_from_db()
+        self.assertEqual(self.file_a.social_security_number, SSN)
+
+    def test_doctor_sees_the_ssn(self):
+        SSN = "1 80 04 75 111 111 42"
+        self.file_a.social_security_number = SSN
+        self.file_a.save(update_fields=["social_security_number"])
+
+        self.client.force_login(self.doctor)
+        response = self.client.get(
+            reverse("patients:detail", args=[self.file_a.pk])
+        )
+        self.assertContains(response, SSN)
+
+    def test_patient_reads_his_own_ssn(self):
+        SSN = "1 80 04 75 111 111 42"
+        self.file_a.social_security_number = SSN
+        self.file_a.save(update_fields=["social_security_number"])
+
+        self.client.force_login(self.patient_a)
+        response = self.client.get(
+            reverse("patients:detail", args=[self.file_a.pk])
+        )
+        self.assertContains(response, SSN)

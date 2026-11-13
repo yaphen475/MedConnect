@@ -16,6 +16,13 @@ def _own_profile(user):
     return Patient.objects.filter(user=user).first()
 
 
+def _hide_ssn_from_secretary(form, user):
+    """RG-08: the social security number is not needed at the reception desk."""
+    if user.role == SECRETARY:
+        form.fields.pop("social_security_number", None)
+    return form
+
+
 @role_required(DOCTOR, SECRETARY, PATIENT)
 def patient_list(request):
     """US-03: list restricted by role. Patients are redirected to their own fiche."""
@@ -35,7 +42,7 @@ def patient_list(request):
 @role_required(DOCTOR, SECRETARY)
 def patient_create(request):
     if request.method == "POST":
-        form = PatientForm(request.POST)
+        form = _hide_ssn_from_secretary(PatientForm(request.POST), request.user)
         medical_form = MedicalNotesForm(
             request.POST if request.user.role == DOCTOR else None
         )
@@ -51,7 +58,7 @@ def patient_create(request):
             messages.success(request, "Patient file created.")
             return redirect("patients:detail", pk=patient.pk)
     else:
-        form = PatientForm()
+        form = _hide_ssn_from_secretary(PatientForm(), request.user)
         medical_form = MedicalNotesForm()
 
     return render(
@@ -80,6 +87,7 @@ def patient_detail(request, pk):
     context = {
         "patient": patient,
         "show_medical": request.user.role == DOCTOR,
+        "show_ssn": request.user.role != SECRETARY,
         "can_edit": request.user.role in (DOCTOR, SECRETARY),
         "role_label": request.user.get_role_display(),
     }
@@ -105,7 +113,9 @@ def patient_edit(request, pk):
     patient = get_object_or_404(Patient, pk=pk)
 
     if request.method == "POST":
-        form = PatientForm(request.POST, instance=patient)
+        form = _hide_ssn_from_secretary(
+            PatientForm(request.POST, instance=patient), request.user
+        )
         medical_form = MedicalNotesForm(
             request.POST if request.user.role == DOCTOR else None,
             instance=patient if request.user.role == DOCTOR else None,
@@ -120,7 +130,9 @@ def patient_edit(request, pk):
             messages.success(request, "Patient file updated.")
             return redirect("patients:detail", pk=patient.pk)
     else:
-        form = PatientForm(instance=patient)
+        form = _hide_ssn_from_secretary(
+            PatientForm(instance=patient), request.user
+        )
         medical_form = (
             MedicalNotesForm(instance=patient)
             if request.user.role == DOCTOR

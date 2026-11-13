@@ -36,8 +36,15 @@ class Patient(models.Model):
         verbose_name_plural = "patients"
 
     def __str__(self):
-        return f"{self.last_name.upper()} {self.first_name}"
+        if self.last_name and self.first_name:
+            return f"{self.last_name.upper()} {self.first_name}"
+        return self.full_name
 
     @property
     def full_name(self):
-        return f"{self.first_name} {self.last_name}".strip()
+        name = f"{self.first_name} {self.last_name}".strip()
+        if name:
+            return name
+        if self.user_id:
+            return self.user.username
+        return f"Patient #{self.pk or '?'}"

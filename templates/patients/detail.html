@@ -26,7 +26,14 @@
                 <dt>Last name</dt><dd>{{ patient.last_name }}</dd>
                 <dt>Birth date</dt><dd>{{ patient.birth_date|default:"—" }}</dd>
                 <dt>Address</dt><dd>{{ patient.address|default:"—" }}</dd>
-                <dt>Social security number</dt><dd>{{ patient.social_security_number|default:"—" }}</dd>
+                <dt>Social security number</dt>
+                <dd>
+                    {% if show_ssn %}
+                        {{ patient.social_security_number|default:"—" }}
+                    {% else %}
+                        <span class="text-secondary"><i class="bi bi-lock me-1"></i>Restricted — RG-08</span>
+                    {% endif %}
+                </dd>
                 <dt>Administrative notes</dt><dd>{{ patient.administrative_notes|default:"—" }}</dd>
                 <dt>Linked account</dt>
                 <dd>{{ patient.user.username|default:"No account yet" }}</dd>

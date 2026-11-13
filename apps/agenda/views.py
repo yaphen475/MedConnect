@@ -69,8 +69,8 @@ def slot_request(request):
     profile, _created = Patient.objects.get_or_create(
         user=request.user,
         defaults={
-            "first_name": request.user.first_name or request.user.username,
-            "last_name": request.user.last_name or "(patient account)",
+            "first_name": request.user.first_name or "",
+            "last_name": request.user.last_name or "",
         },
     )
     appointment = Appointment.objects.create(
