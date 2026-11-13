@@ -160,8 +160,8 @@ DOCS = [
             "validation",
         ],
         "content": (
-            "Seule la secrétaire confirme ou refuse une demande de rendez-vous "
-            "(RG-01). Un rendez-vous confirmé rend son créneau indisponible et "
+            "Seule la secrétaire confirme ou refuse une demande de rendez-vous. "
+            "Un rendez-vous confirmé rend son créneau indisponible et "
             "un créneau ne peut accueillir qu'un seul rendez-vous confirmé. "
             "Annuler un rendez-vous confirmé rend le créneau à nouveau libre."
         ),
@@ -170,8 +170,8 @@ DOCS = [
 
 REFUSAL = (
     "Je ne peux pas répondre à cette question : l'assistant ne fournit "
-    "jamais de diagnostic, de conseil médical ni de prescription "
-    "(règle RG-13). Pour un avis médical, contactez votre médecin ou la "
+    "jamais de diagnostic, de conseil médical ni de prescription. "
+    "Pour un avis médical, contactez votre médecin ou la "
     "secrétaire du cabinet."
 )
 

@@ -10,7 +10,7 @@
         <h1>
             {% for person in other_participants %}{{ person.username }}{% if not forloop.last %}, {% endif %}{% endfor %}
         </h1>
-        <p>Chronological history — participants only (US-16 / RG-11).</p>
+        <p>Chronological history — participants only.</p>
     </div>
     <a class="btn btn-outline-light" href="{% url 'messaging:inbox' %}"><i class="bi bi-arrow-left"></i> Inbox</a>
 </section>

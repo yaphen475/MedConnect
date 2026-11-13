@@ -1,0 +1,33 @@
+{% extends "accounts/base.html" %}
+{% load static %}
+
+{% block title %}403 — Access restricted | MedConnect{% endblock %}
+
+{% block content %}
+<link href="{% static 'css/modules.css' %}" rel="stylesheet">
+<div class="d-flex align-items-center justify-content-center" style="min-height: 100vh; padding: 1.5rem;">
+    <div class="module-panel text-center" style="max-width: 32rem; width: 100%;">
+        <i class="bi bi-shield-lock" style="font-size: 3rem; color: rgba(13, 202, 240, .8);"></i>
+        <h1 class="h4 mt-3">403 — Access restricted</h1>
+        {% if user.is_authenticated %}
+            <p>
+                Your profile (<strong>{{ user.get_role_display|default:"unknown" }}</strong>)
+                is not allowed to open this area.
+            </p>
+            <p class="small text-secondary mb-4">
+                Each role only accesses the data it needs. The technical
+                administrator never sees patient data, medical records or
+                private conversations.
+            </p>
+            <a class="btn btn-info d-inline-flex align-items-center gap-2" href="{% url 'accounts:dashboard' %}">
+                <i class="bi bi-grid"></i> Back to dashboard
+            </a>
+        {% else %}
+            <p>You need to sign in to open this area.</p>
+            <a class="btn btn-info d-inline-flex align-items-center gap-2" href="{% url 'accounts:login' %}">
+                <i class="bi bi-box-arrow-in-right"></i> Sign in
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -185,7 +185,7 @@ class PatientPermissionTests(TestCase):
             reverse("patients:detail", args=[self.file_a.pk])
         )
         self.assertNotContains(response, SSN)
-        self.assertContains(response, "Restricted — RG-08")
+        self.assertContains(response, "Restricted")
 
         # Absent from the edit form.
         response = self.client.get(

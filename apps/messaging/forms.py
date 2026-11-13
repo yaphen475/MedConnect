@@ -30,6 +30,6 @@ class ComposeForm(forms.Form):
         recipient = self.cleaned_data["recipient"]
         if recipient.role == User.Role.ADMIN:
             raise forms.ValidationError(
-                "The technical administrator cannot receive messages (RG-12)."
+                "The technical administrator cannot receive messages."
             )
         return recipient

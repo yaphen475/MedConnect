@@ -31,7 +31,7 @@
                     {% if show_ssn %}
                         {{ patient.social_security_number|default:"—" }}
                     {% else %}
-                        <span class="text-secondary"><i class="bi bi-lock me-1"></i>Restricted — RG-08</span>
+                        <span class="text-secondary"><i class="bi bi-lock me-1"></i>Restricted</span>
                     {% endif %}
                 </dd>
                 <dt>Administrative notes</dt><dd>{{ patient.administrative_notes|default:"—" }}</dd>
@@ -45,7 +45,7 @@
             <h2 class="h5 mb-3"><i class="bi bi-heart-pulse me-2"></i>Medical</h2>
             {% if show_medical %}
                 <p class="mb-2 text-secondary small">
-                    Visible by the doctor only (RG-07).
+                    Visible by the doctor only.
                 </p>
                 <p class="mb-0">{{ patient.medical_notes|default:"No medical note." }}</p>
                 {% if patient.user_id %}

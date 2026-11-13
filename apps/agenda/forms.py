@@ -47,7 +47,7 @@ class DirectAppointmentForm(forms.ModelForm):
                 clash = clash.exclude(pk=self.instance.pk)
             if clash.exists():
                 raise ValidationError(
-                    "This slot already hosts a confirmed appointment (RG-04)."
+                    "This slot already hosts a confirmed appointment."
                 )
         return cleaned
 
